@@ -1,4 +1,4 @@
-package com.api.proyectmanager.entity.task;
+package com.api.proyectmanager.task.domain;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.api.proyectmanager.entity.project;
+package com.api.proyectmanager.project.domain;
 
 import java.io.Serializable;
 

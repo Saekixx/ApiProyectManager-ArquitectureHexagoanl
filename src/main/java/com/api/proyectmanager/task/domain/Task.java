@@ -1,28 +1,28 @@
-package com.api.proyectmanager.entity.user;
+package com.api.proyectmanager.task.domain;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.api.proyectmanager.project.domain.Project;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "user")
+@Table(name = "task")
 @Data
-public class User {
+public class Task {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String username;
-    private String password;
-    private String fullname;
-    private String email;
-    
-    // Relación con Rol
+    private String name;
+    private String description;
+
+    // Relación con Project
     @ManyToOne
-    @JoinColumn(name = "rol_id")
-    private Rol rol;
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     @CreationTimestamp
     @Column(updatable = false, name = "createdAt")

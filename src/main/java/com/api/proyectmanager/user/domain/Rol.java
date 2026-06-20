@@ -1,4 +1,4 @@
-package com.api.proyectmanager.entity.user;
+package com.api.proyectmanager.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

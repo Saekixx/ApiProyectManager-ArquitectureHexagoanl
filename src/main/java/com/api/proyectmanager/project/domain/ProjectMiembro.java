@@ -1,10 +1,10 @@
-package com.api.proyectmanager.entity.project;
+package com.api.proyectmanager.project.domain;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.api.proyectmanager.entity.user.User;
+import com.api.proyectmanager.user.domain.User;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,28 +1,28 @@
-package com.api.proyectmanager.entity.task;
+package com.api.proyectmanager.project.domain;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.api.proyectmanager.entity.project.Project;
+import com.api.proyectmanager.user.domain.User;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "task")
+@Table(name = "project")
 @Data
-public class Task {
+public class Project {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;
 
-    // Relación con Project
+    // Relación con User (líder del proyecto)
     @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Project project;
+    @JoinColumn(name = "leader_id")
+    private User leader;
 
     @CreationTimestamp
     @Column(updatable = false, name = "createdAt")

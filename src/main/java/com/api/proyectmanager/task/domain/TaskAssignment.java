@@ -1,6 +1,6 @@
-package com.api.proyectmanager.entity.task;
+package com.api.proyectmanager.task.domain;
 
-import com.api.proyectmanager.entity.user.User;
+import com.api.proyectmanager.user.domain.User;
 
 import jakarta.persistence.*;
 import lombok.Data;
