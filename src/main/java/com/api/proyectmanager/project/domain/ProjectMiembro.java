@@ -1,31 +1,45 @@
 package com.api.proyectmanager.project.domain;
 
+import com.api.proyectmanager.user.domain.User;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.CreationTimestamp;
 
-import com.api.proyectmanager.user.domain.User;
 
-import jakarta.persistence.*;
-import lombok.Data;
 
-@Entity
-@Table(name = "project_miembro")
-@Data
 public class ProjectMiembro {
-    @EmbeddedId
-    private ProjectMiembroId id;
-
-    @ManyToOne
-    @MapsId("projectId")
-    @JoinColumn(name = "project_id")
-    private Project project;
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    private User user;
-    
-    @CreationTimestamp
-    @Column(updatable = false, name = "joined_at")
+    private Project project; // Relación con Project
+    private User user; // Relación con User
     private LocalDateTime joinedAt;
+
+    public ProjectMiembro() {}
+
+    public ProjectMiembro(Project project, User user, LocalDateTime joinedAt) {
+        this.project = project;
+        this.user = user;
+        this.joinedAt = joinedAt;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDateTime getJoinedAt() {
+        return joinedAt;
+    }
+
+    public void setJoinedAt(LocalDateTime joinedAt) {
+        this.joinedAt = joinedAt;
+    }
 }
