@@ -8,17 +8,19 @@ public class Project {
     private Integer id;
     private String name;
     private String description;
+    private boolean isActive;
     private User leader; // Relación con User (líder del proyecto)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Project() {}
 
-    public Project(Integer id, String name, String description, User leader, LocalDateTime createdAt,
+    public Project(Integer id, String name, String description, boolean isActive, User leader, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.isActive = isActive;
         this.leader = leader;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -46,6 +48,14 @@ public class Project {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public User getLeader() {
