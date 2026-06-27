@@ -11,5 +11,5 @@ public interface RolRepository {
     // Puerto para buscar un rol por su nombre
     Optional<Rol> findByName(String name);
     // Puerto para listar todos los roles
-    List<Rol> findAll();
+    List<Rol> findAll(); 
 }
