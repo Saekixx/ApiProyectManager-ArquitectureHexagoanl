@@ -1,0 +1,90 @@
+package com.api.proyectmanager.user.infrastructure.adapters.output;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
+import com.api.proyectmanager.user.domain.User;
+import com.api.proyectmanager.user.domain.ports.UserRepository;
+import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.SpringDataUserRepository;
+import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserEntity;
+import com.api.proyectmanager.user.infrastructure.adapters.output.mapper.user.UserMapper;
+
+// Adaptador para la persistencia de usuarios
+@Component
+public class UserPersistenceAdapter implements UserRepository {
+    private final SpringDataUserRepository jpaRepository; // Repositorio JPA para la persistencia de usuarios
+
+    // Inyección por constructor
+    public UserPersistenceAdapter(SpringDataUserRepository jpaRepository) {
+        this.jpaRepository = jpaRepository;
+    }
+
+    /* Este adaptador implementa los métodos del puerto UserRepository para 
+       interactuar con la base de datos a través del repositorio JPA */
+
+    @Override
+    public User save(User user) {
+        // Convertimos el objeto User a UserEntity usando el mapper
+        UserEntity entity = UserMapper.toEntity(user);
+        // Guardamos la entidad en la base de datos usando el repositorio JPA
+        UserEntity savedEntity = jpaRepository.save(entity);
+        // Convertimos la entidad guardada de nuevo a User y la retornamos
+        return UserMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        // Verificamos si existe un usuario con el correo electrónico dado usando el repositorio JPA
+        return jpaRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public void update(User user) {
+        // Convertimos el objeto User a UserEntity usando el mapper
+        UserEntity entity = UserMapper.toEntity(user);
+        // Guardamos la entidad en la base de datos usando el repositorio JPA
+        jpaRepository.save(entity);
+    }
+
+    @Override
+    public List<User> findAll() {
+        // Obtenemos todas las entidades de usuario desde la base de datos usando el repositorio JPA
+        List<UserEntity> entities = jpaRepository.findAll();
+        // Convertimos la lista de entidades a una lista de objetos User y la retornamos
+        return entities.stream().map(UserMapper::toDomain).toList();
+    }
+    
+    @Override
+    public Optional<User> findByEmail(String email) {
+        // Buscamos la entidad de usuario por su correo electrónico usando el repositorio JPA
+        return jpaRepository.findByEmail(email)
+                .map(UserMapper::toDomain); // Convertimos la entidad encontrada a User y la retornamos envuelta en Optional
+    }
+
+    @Override
+    public void activateById(Integer id) {
+        // Buscamos la entidad de usuario por su ID usando el repositorio JPA
+        UserEntity entity = jpaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+        // Activamos o desactivamos el usuario según su estado actual
+        entity.setActive(!entity.isActive());
+        // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
+        jpaRepository.save(entity);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        // Buscamos la entidad de usuario por su nombre de usuario usando el repositorio JPA
+        return jpaRepository.findByUsername(username)
+                .map(UserMapper::toDomain)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con nombre de usuario: " + username));
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        // Verificamos si existe un usuario con el nombre de usuario dado usando el repositorio JPA
+        return jpaRepository.findByUsername(username).isPresent();
+    }
+}

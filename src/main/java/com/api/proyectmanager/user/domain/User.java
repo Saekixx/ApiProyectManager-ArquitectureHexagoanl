@@ -8,7 +8,7 @@ public class User {
     private String password;
     private String fullname;
     private String email;
-    private boolean isActive;
+    private boolean isActive = true;
     private Rol rol; // Relación con la clase Rol
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -64,7 +64,7 @@ public class User {
         return isActive;
     }
 
-    public void setActive(boolean isActive) {
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 
