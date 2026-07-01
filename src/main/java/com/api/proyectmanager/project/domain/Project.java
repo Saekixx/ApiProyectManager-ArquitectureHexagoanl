@@ -8,14 +8,14 @@ public class Project {
     private Integer id;
     private String name;
     private String description;
-    private boolean isActive;
+    private Boolean isActive;
     private User leader; // Relación con User (líder del proyecto)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Project() {}
 
-    public Project(Integer id, String name, String description, boolean isActive, User leader, LocalDateTime createdAt,
+    public Project(Integer id, String name, String description, Boolean isActive, User leader, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -50,11 +50,11 @@ public class Project {
         this.description = description;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean isActive) {
+    public void setActive(Boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -80,5 +80,17 @@ public class Project {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void actualizarDatos(String name, String description) {
+        if (name != null && !name.isBlank()) this.name = name;
+        if (description != null && !description.isBlank()) this.description = description;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public Boolean toggleActive() {
+        this.isActive = !this.isActive;
+        this.updatedAt = LocalDateTime.now();
+        return this.isActive;
     }
 }

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.proyectmanager.shared.adapters.http.Response;
-import com.api.proyectmanager.user.application.user.FindAllService;
-import com.api.proyectmanager.user.application.user.UpdateService;
-import com.api.proyectmanager.user.application.user.FindByIdService;
+import com.api.proyectmanager.user.application.user.FindAll;
+import com.api.proyectmanager.user.application.user.Update;
+import com.api.proyectmanager.user.application.user.FindById;
 import com.api.proyectmanager.user.application.user.ToggleActiveById;
 import com.api.proyectmanager.user.application.user.ChangeRoleById;
 import com.api.proyectmanager.user.domain.User;
@@ -29,13 +29,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
-    private final FindAllService findAllService;
-    private final UpdateService updateService;
-    private final FindByIdService findByIdService;
+    private final FindAll findAllService;
+    private final Update updateService;
+    private final FindById findByIdService;
     private final ToggleActiveById toggleActiveById;
     private final ChangeRoleById changeRoleByIdService;
 
-    public UserController(FindAllService findAllService, UpdateService updateService, FindByIdService findByIdService, ToggleActiveById toggleActiveById, ChangeRoleById changeRoleByIdService) {
+    public UserController(FindAll findAllService, Update updateService, FindById findByIdService, ToggleActiveById toggleActiveById, ChangeRoleById changeRoleByIdService) {
         this.findAllService = findAllService;
         this.updateService = updateService;
         this.findByIdService = findByIdService;

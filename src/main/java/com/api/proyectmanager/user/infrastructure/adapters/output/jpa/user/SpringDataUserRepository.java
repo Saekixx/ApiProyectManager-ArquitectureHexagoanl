@@ -14,4 +14,6 @@ public interface SpringDataUserRepository extends JpaRepository<UserEntity, Inte
     @Modifying
     @Query("UPDATE UserEntity u SET u.isActive = :active WHERE u.id = :id")
     void updateStatus(@Param("id") Integer id, @Param("active") Boolean active);
+    @Query("SELECT u.isActive FROM UserEntity u WHERE u.id = :id")
+    Optional<Boolean> isUserActive(@Param("id") Integer id);
 }

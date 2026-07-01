@@ -9,13 +9,13 @@ import com.api.proyectmanager.user.domain.ports.RolRepository;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
 @Service
-public class SaveService {
+public class Save {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)
     private static final String ROL_DEFAULT = "COLABORADOR"; // Nombre del rol por defecto
 
     // Constructor para inyectar el repositorio de usuarios
-    public SaveService(UserRepository userRepository, RolRepository rolRepository) {
+    public Save(UserRepository userRepository, RolRepository rolRepository) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
     }

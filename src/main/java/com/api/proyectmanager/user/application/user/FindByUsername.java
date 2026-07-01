@@ -1,19 +1,22 @@
 package com.api.proyectmanager.user.application.user;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
+import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
 @Service
-public class ExistsByEmailService {
+public class FindByUsername {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 
     // Constructor para inyectar el repositorio de usuarios
-    public ExistsByEmailService(UserRepository userRepository) {
+    public FindByUsername(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

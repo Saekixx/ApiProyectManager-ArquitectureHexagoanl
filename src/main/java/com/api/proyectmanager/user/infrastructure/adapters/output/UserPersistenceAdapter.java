@@ -106,4 +106,11 @@ public class UserPersistenceAdapter implements UserRepository {
         // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
         jpaRepository.save(entity);
     }
+
+    @Override
+    public Boolean isActiveById(Integer id) {
+        // Verificamos si el usuario con el ID proporcionado está activo usando el repositorio JPA
+        return jpaRepository.isUserActive(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+    }
 }

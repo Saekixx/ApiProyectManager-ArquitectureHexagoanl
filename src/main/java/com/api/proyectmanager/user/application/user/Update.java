@@ -8,12 +8,12 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
 @Service
-public class UpdateService {
+public class Update {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
     private final PasswordEncoder passwordEncoder; // Inyección de PasswordEncoder para encriptar contraseñas
 
     // Constructor para inyectar el repositorio de usuarios
-    public UpdateService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public Update(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -28,7 +28,7 @@ public class UpdateService {
             userCambios.setPassword(passwordEncoder.encode(userCambios.getPassword()));
         }
         // Validamos campos que no se han enviado para mantener los datos existentes
-        userExistente.actualizarDatos(userCambios);
+        userExistente.actualizarDatosGenerales(userCambios.getUsername(), userCambios.getEmail(), userCambios.getFullname(), userCambios.getPassword());
         // Guardamos los cambios en el repositorio usando el puerto
         userRepository.update(userExistente);
     }

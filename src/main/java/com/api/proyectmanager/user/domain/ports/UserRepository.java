@@ -14,6 +14,8 @@ public interface UserRepository {
     List<User> findAll();
     // Puerto para activar o desactivar un usuario por su ID
     void toggleActiveById(Integer id, Boolean active);
+    // Puerto para verificar si el usuario esta activo
+    Boolean isActiveById(Integer id);
 
     // Puerto para obtener un usuario por su ID
     Optional<User> findById(Integer id);

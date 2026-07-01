@@ -10,7 +10,7 @@ public class Task {
     private Integer id;
     private String name;
     private String description;
-    private boolean isActive;
+    private Boolean isActive;
     private Project project; // Relación con Project
     private Set<User> assignedUsers; // Relación con User (usuarios asignados a la tarea)
     private LocalDateTime createdAt;
@@ -18,7 +18,7 @@ public class Task {
 
     public Task() {}
 
-    public Task(Integer id, String name, String description, Project project, Set<User> assignedUsers, boolean isActive, LocalDateTime createdAt,
+    public Task(Integer id, String name, String description, Project project, Set<User> assignedUsers, Boolean isActive, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -54,11 +54,11 @@ public class Task {
         this.description = description;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean isActive) {
+    public void setActive(Boolean isActive) {
         this.isActive = isActive;
     }
 

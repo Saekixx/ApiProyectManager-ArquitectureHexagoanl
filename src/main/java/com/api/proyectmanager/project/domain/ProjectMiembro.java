@@ -7,13 +7,13 @@ public class ProjectMiembro {
     private Integer id;
     private Project project; // Relación con Project
     private User user; // Relación con User
-    private boolean isActive; // Indica si el miembro está activo en el proyecto
+    private Boolean isActive; // Indica si el miembro está activo en el proyecto
     private LocalDateTime joinedAt;
     private LocalDateTime exitedAt;
 
     public ProjectMiembro() {}
 
-    public ProjectMiembro(Integer id, Project project, User user, boolean isActive, LocalDateTime joinedAt, LocalDateTime exitedAt) {
+    public ProjectMiembro(Integer id, Project project, User user, Boolean isActive, LocalDateTime joinedAt, LocalDateTime exitedAt) {
         this.id = id;
         this.project = project;
         this.user = user;
@@ -46,11 +46,11 @@ public class ProjectMiembro {
         this.user = user;
     }
 
-    public boolean isActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean isActive) {
+    public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -68,5 +68,15 @@ public class ProjectMiembro {
 
     public void setExitedAt(LocalDateTime exitedAt) {
         this.exitedAt = exitedAt;
+    }
+
+    public Boolean toggleActive() {
+        this.isActive = !this.isActive;
+        if (!this.isActive) {
+            this.exitedAt = LocalDateTime.now(); // Actualizar la fecha de salida al desactivar
+        } else {
+            this.exitedAt = null; // Limpiar la fecha de salida al activar
+        }
+        return this.isActive;
     }
 }

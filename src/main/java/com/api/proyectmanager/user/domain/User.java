@@ -101,24 +101,16 @@ public class User {
     }
 
     // Método para actualizar los datos del usuario, excepto el rol y el estado activo
-    public void actualizarDatos(User cambios) {
-        // Validamos que no se intente cambiar el rol directamente
-        if (cambios.getRol() != null) {
-            throw new IllegalArgumentException("No se puede cambiar el rol directamente.");
-        }
-        // Validamos que no se intente cambiar el estado activo directamente
-        if (cambios.getIsActive() != null && !cambios.getIsActive().equals(this.getIsActive())) { 
-            throw new IllegalArgumentException("No se puede cambiar el estado activo directamente.");
-        }
-
-        if (cambios.getUsername() != null) this.username = cambios.getUsername();
-        if (cambios.getEmail() != null) this.email = cambios.getEmail();
-        if (cambios.getFullname() != null) this.fullname = cambios.getFullname();
-        if (cambios.getPassword() != null) this.password = cambios.getPassword();
+    public void actualizarDatosGenerales(String username, String email, String fullname, String password) {
+        if (username != null && !username.isBlank()) this.username = username;
+        if (email != null && !email.isBlank()) this.email = email;
+        if (fullname != null && !fullname.isBlank()) this.fullname = fullname;
+        if (password != null && !password.isBlank()) this.password = password;
     }
     // Metodo para activar o desactivar el usuario
     public Boolean toggleActive() {
         this.isActive = !this.isActive;
+        this.updatedAt = LocalDateTime.now(); // Actualizar la fecha de actualización al cambiar el estado
         return this.isActive;
     }
 }
