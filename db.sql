@@ -14,6 +14,7 @@ create table user(
     password char(255) not null,
     fullname char(150) not null,
     email char(150) not null unique,
+    isActive boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp ,
     rol_id int references rol(id)
@@ -24,15 +25,18 @@ create table project(
     name char(100) not null,
     leader_id int references user(id),
     description char(255) not null,
+    isActive boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp 
 );
 
 create table project_miembro(
+	id int auto_increment primary key,
 	project_id int references project(id) on delete cascade,
     user_id int references user(id) on delete cascade,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    primary key (project_id,user_id)
+    isActive boolean default true,
+    joined_at timestamp default current_timestamp,
+    exited_at timestamp null
 );
 
 create table task(

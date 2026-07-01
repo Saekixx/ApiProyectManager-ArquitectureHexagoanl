@@ -1,0 +1,16 @@
+package com.api.proyectmanager.user.application.user;
+
+import com.api.proyectmanager.user.domain.ports.UserRepository;
+
+public class ExistsByUsernameService {
+    private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
+
+    // Constructor para inyectar el repositorio de usuarios
+    public ExistsByUsernameService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+}

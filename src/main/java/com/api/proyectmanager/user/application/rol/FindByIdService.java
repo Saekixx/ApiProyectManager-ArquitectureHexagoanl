@@ -5,11 +5,11 @@ import java.util.Optional;
 import com.api.proyectmanager.user.domain.Rol;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 
-public class FindByIdRolService {
+public class FindByIdService {
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)
 
     // Constructor para inyectar el repositorio de roles
-    public FindByIdRolService(RolRepository rolRepository) {
+    public FindByIdService(RolRepository rolRepository) {
         this.rolRepository = rolRepository;
     }
 

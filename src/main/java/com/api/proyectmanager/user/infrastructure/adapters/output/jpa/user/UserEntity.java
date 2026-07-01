@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.api.proyectmanager.user.domain.Rol;
+import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.rol.RolEntity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "rol_id")
-    private Rol rol; // Relación con la clase Rol
+    private RolEntity rol; // Relación con la clase Rol
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

@@ -9,16 +9,20 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.SpringDataUserRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserEntity;
+import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.rol.RolEntity;
+import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.rol.SpringDataRolRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.mapper.user.UserMapper;
 
 // Adaptador para la persistencia de usuarios
 @Component
 public class UserPersistenceAdapter implements UserRepository {
     private final SpringDataUserRepository jpaRepository; // Repositorio JPA para la persistencia de usuarios
+    private final SpringDataRolRepository rolRepository; // Adaptador para la persistencia de roles
 
     // Inyección por constructor
-    public UserPersistenceAdapter(SpringDataUserRepository jpaRepository) {
+    public UserPersistenceAdapter(SpringDataUserRepository jpaRepository, SpringDataRolRepository rolRepository) {
         this.jpaRepository = jpaRepository;
+        this.rolRepository = rolRepository;
     }
 
     /* Este adaptador implementa los métodos del puerto UserRepository para 
@@ -86,5 +90,26 @@ public class UserPersistenceAdapter implements UserRepository {
     public boolean existsByUsername(String username) {
         // Verificamos si existe un usuario con el nombre de usuario dado usando el repositorio JPA
         return jpaRepository.findByUsername(username).isPresent();
+    }
+
+    @Override 
+    public Optional<User> findById(Integer id) {
+        // Buscamos la entidad de usuario por su ID usando el repositorio JPA
+        return jpaRepository.findById(id)
+                .map(UserMapper::toDomain); // Convertimos la entidad encontrada a User y la retornamos envuelta en Optional
+    }
+
+    @Override
+    public void changeRoleById(Integer userId, Integer rolId) {
+        // Buscamos la entidad de usuario por su ID usando el repositorio JPA
+        UserEntity entity = jpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + userId));
+        // Buscamos el rol correspondiente al rolId proporcionado usando el repositorio JPA
+        RolEntity rolEntity = rolRepository.findById(rolId)
+                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado con ID: " + rolId));
+        // Cambiamos el rol del usuario al nuevo rol proporcionado
+        entity.setRol(rolEntity);
+        // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
+        jpaRepository.save(entity);
     }
 }
