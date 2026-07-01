@@ -8,14 +8,14 @@ public class User {
     private String password;
     private String fullname;
     private String email;
-    private boolean isActive = true;
+    private Boolean isActive = true;
     private Rol rol; // Relación con la clase Rol
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public User() {}
 
-    public User(Integer id, String username, String password, String fullname, String email, boolean isActive, Rol rol,
+    public User(Integer id, String username, String password, String fullname, String email, Boolean isActive, Rol rol,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
@@ -60,11 +60,11 @@ public class User {
         this.fullname = fullname;
     }
 
-    public boolean isActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(boolean isActive) {
+    public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -98,5 +98,22 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    // Método para actualizar los datos del usuario, excepto el rol y el estado activo
+    public void actualizarDatos(User cambios) {
+        // Validamos que no se intente cambiar el rol directamente
+        if (cambios.getRol() != null) {
+            throw new IllegalArgumentException("No se puede cambiar el rol directamente.");
+        }
+        // Validamos que no se intente cambiar el estado activo directamente
+        if (cambios.getIsActive() != null && !cambios.getIsActive().equals(this.getIsActive())) { 
+            throw new IllegalArgumentException("No se puede cambiar el estado activo directamente.");
+        }
+
+        if (cambios.getUsername() != null) this.username = cambios.getUsername();
+        if (cambios.getEmail() != null) this.email = cambios.getEmail();
+        if (cambios.getFullname() != null) this.fullname = cambios.getFullname();
+        if (cambios.getPassword() != null) this.password = cambios.getPassword();
     }
 }

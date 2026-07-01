@@ -1,4 +1,4 @@
-package com.api.proyectmanager.user.infrastructure.adapters.security.jwt;
+package com.api.proyectmanager.auth.infrastructure.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

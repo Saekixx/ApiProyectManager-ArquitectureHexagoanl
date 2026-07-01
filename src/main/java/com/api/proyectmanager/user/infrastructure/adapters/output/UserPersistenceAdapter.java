@@ -39,7 +39,7 @@ public class UserPersistenceAdapter implements UserRepository {
     }
 
     @Override
-    public boolean existsByEmail(String email) {
+    public Boolean existsByEmail(String email) {
         // Verificamos si existe un usuario con el correo electrónico dado usando el repositorio JPA
         return jpaRepository.findByEmail(email).isPresent();
     }
@@ -73,21 +73,20 @@ public class UserPersistenceAdapter implements UserRepository {
         UserEntity entity = jpaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
         // Activamos o desactivamos el usuario según su estado actual
-        entity.setActive(!entity.isActive());
+        entity.setIsActive(entity.getIsActive());
         // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
         jpaRepository.save(entity);
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         // Buscamos la entidad de usuario por su nombre de usuario usando el repositorio JPA
         return jpaRepository.findByUsername(username)
-                .map(UserMapper::toDomain)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con nombre de usuario: " + username));
+                .map(UserMapper::toDomain); // Convertimos la entidad encontrada a User y la retornamos envuelta en Optional
     }
 
     @Override
-    public boolean existsByUsername(String username) {
+    public Boolean existsByUsername(String username) {
         // Verificamos si existe un usuario con el nombre de usuario dado usando el repositorio JPA
         return jpaRepository.findByUsername(username).isPresent();
     }

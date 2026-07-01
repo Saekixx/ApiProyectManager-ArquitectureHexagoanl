@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -29,7 +29,7 @@ public class UserEntity {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
-    private boolean isActive = true;
+    private Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "rol_id")

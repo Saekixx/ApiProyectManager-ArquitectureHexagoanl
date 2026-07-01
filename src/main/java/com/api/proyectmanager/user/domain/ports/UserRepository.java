@@ -20,11 +20,11 @@ public interface UserRepository {
     // Puerto para buscar un usuario por su correo electrónico
     Optional<User> findByEmail(String email);
     // Puerto para verificar si un correo electrónico ya existe
-    boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
     // Puerto para buscar un usuario por su nombre de usuario
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
     // Puerto para verificar si un nombre de usuario ya existe
-    boolean existsByUsername(String username);
+    Boolean existsByUsername(String username);
     // Puerto para cambiar de rol a un usuario por su ID
     void changeRoleById(Integer userId, Integer rolId);
 }

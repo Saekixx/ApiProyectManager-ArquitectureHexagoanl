@@ -7,9 +7,9 @@ import com.api.proyectmanager.auth.domain.exceptions.InvalidCredentialsException
 import com.api.proyectmanager.auth.domain.ports.LoginUseCase;
 import com.api.proyectmanager.auth.infrastructure.adapters.input.dto.AuthResponse;
 import com.api.proyectmanager.auth.infrastructure.adapters.input.dto.LoginRequest;
+import com.api.proyectmanager.auth.infrastructure.security.jwt.JwtUtil;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
-import com.api.proyectmanager.user.infrastructure.adapters.security.jwt.JwtUtil;
 
 @Service
 public class LoginService implements LoginUseCase {

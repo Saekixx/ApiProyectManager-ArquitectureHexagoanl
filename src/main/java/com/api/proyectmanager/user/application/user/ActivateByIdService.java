@@ -1,8 +1,11 @@
 package com.api.proyectmanager.user.application.user;
 
+import org.springframework.stereotype.Service;
+
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
+@Service
 public class ActivateByIdService {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 
@@ -17,7 +20,7 @@ public class ActivateByIdService {
                 .orElseThrow(() -> new RuntimeException("Error: El usuario con ID " + userId + " no existe."));
 
         // Validar si ya estaba activo
-        if (user.isActive()) {
+        if (user.getIsActive()) {
             throw new RuntimeException("El usuario ya se encuentra activo en el sistema.");
         }
         

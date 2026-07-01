@@ -19,7 +19,7 @@ public class UserMapper {
             entity.getPassword(),
             entity.getFullname(),
             entity.getEmail(),
-            entity.isActive(),
+            entity.getIsActive(),
             RolMapper.toDomain(entity.getRol()),
             entity.getCreatedAt(),
             entity.getUpdatedAt()
@@ -39,7 +39,7 @@ public class UserMapper {
         entity.setPassword(user.getPassword());
         entity.setFullname(user.getFullname());
         entity.setEmail(user.getEmail());
-        entity.setActive(user.isActive());
+        entity.setIsActive(user.getIsActive());
         entity.setRol(RolMapper.toEntity(user.getRol()));
         entity.setCreatedAt(user.getCreatedAt());
         entity.setUpdatedAt(user.getUpdatedAt());

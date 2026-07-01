@@ -1,8 +1,13 @@
 package com.api.proyectmanager.user.application.user;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
+@Service
 public class FindByUsernameService {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 
@@ -11,7 +16,7 @@ public class FindByUsernameService {
         this.userRepository = userRepository;
     }
 
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

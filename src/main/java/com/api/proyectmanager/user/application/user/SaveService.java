@@ -1,10 +1,13 @@
 package com.api.proyectmanager.user.application.user;
 
+import org.springframework.stereotype.Service;
+
 import com.api.proyectmanager.user.domain.Rol;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
+@Service
 public class SaveService {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)

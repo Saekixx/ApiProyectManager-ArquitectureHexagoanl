@@ -1,4 +1,4 @@
-package com.api.proyectmanager.user.infrastructure.adapters.security.config;
+package com.api.proyectmanager.auth.infrastructure.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
