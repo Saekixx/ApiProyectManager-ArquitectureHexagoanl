@@ -12,12 +12,13 @@ import com.api.proyectmanager.shared.adapters.http.Response;
 import com.api.proyectmanager.user.application.user.FindAllService;
 import com.api.proyectmanager.user.application.user.UpdateService;
 import com.api.proyectmanager.user.application.user.FindByIdService;
-import com.api.proyectmanager.user.application.user.ActivateByIdService;
+import com.api.proyectmanager.user.application.user.ToggleActiveById;
 import com.api.proyectmanager.user.application.user.ChangeRoleById;
 import com.api.proyectmanager.user.domain.User;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,14 +32,14 @@ public class UserController {
     private final FindAllService findAllService;
     private final UpdateService updateService;
     private final FindByIdService findByIdService;
-    private final ActivateByIdService activateUserService;
+    private final ToggleActiveById toggleActiveById;
     private final ChangeRoleById changeRoleByIdService;
 
-    public UserController(FindAllService findAllService, UpdateService updateService, FindByIdService findByIdService, ActivateByIdService activateUserService, ChangeRoleById changeRoleByIdService) {
+    public UserController(FindAllService findAllService, UpdateService updateService, FindByIdService findByIdService, ToggleActiveById toggleActiveById, ChangeRoleById changeRoleByIdService) {
         this.findAllService = findAllService;
         this.updateService = updateService;
         this.findByIdService = findByIdService;
-        this.activateUserService = activateUserService;
+        this.toggleActiveById = toggleActiveById;
         this.changeRoleByIdService = changeRoleByIdService;
     }
 
@@ -62,14 +63,15 @@ public class UserController {
     }
 
     // Endpoint para activar o desactivar un usuario por su ID
-    @GetMapping("/activate/{id}")
+    @PostMapping("/activate/{id}")
     public ResponseEntity<Response<Void>> activateUserById(@PathVariable Integer id) {
-        activateUserService.activateUserById(id);
-        return ResponseEntity.ok(new Response<>(true, "Usuario activado/desactivado correctamente."));
+        String result = toggleActiveById.execute(id);
+        return ResponseEntity.ok(new Response<>(true, result));
     }
 
+
     // Endpoint para cambiar el rol de un usuario por su ID
-    @GetMapping("/rol/{userId}/{rolId}")
+    @PostMapping("/rol/{userId}/{rolId}")
     public ResponseEntity<Response<Void>> changeRoleById(@PathVariable Integer userId, @PathVariable Integer rolId) {
         changeRoleByIdService.execute(userId, rolId);
         return ResponseEntity.ok(new Response<>(true, "Rol del usuario cambiado correctamente."));  

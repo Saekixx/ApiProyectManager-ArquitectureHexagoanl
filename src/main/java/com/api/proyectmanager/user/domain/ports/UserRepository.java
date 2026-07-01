@@ -13,7 +13,7 @@ public interface UserRepository {
     // Puerto para obtener todos los usuarios
     List<User> findAll();
     // Puerto para activar o desactivar un usuario por su ID
-    void activateById(Integer id);
+    void toggleActiveById(Integer id, Boolean active);
 
     // Puerto para obtener un usuario por su ID
     Optional<User> findById(Integer id);

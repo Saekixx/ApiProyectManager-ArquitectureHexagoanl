@@ -116,4 +116,9 @@ public class User {
         if (cambios.getFullname() != null) this.fullname = cambios.getFullname();
         if (cambios.getPassword() != null) this.password = cambios.getPassword();
     }
+    // Metodo para activar o desactivar el usuario
+    public Boolean toggleActive() {
+        this.isActive = !this.isActive;
+        return this.isActive;
+    }
 }

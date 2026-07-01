@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.api.proyectmanager.auth.domain.exceptions.InvalidCredentialsException;
+import com.api.proyectmanager.shared.domain.BusinessException;
 
 @RestControllerAdvice // Esta anotación indica que esta clase manejará excepciones de manera global para todos los controladores REST en la aplicación.
 public class GlobalExceptionHandler {
@@ -18,8 +19,8 @@ public class GlobalExceptionHandler {
     }
 
     // Manejo de Errores de Negocio Generales
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Response<Void>> handleIllegalArgument(IllegalArgumentException ex) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Response<Void>> handleBusinessException(BusinessException ex) {
         Response<Void> response = new Response<>(false, ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

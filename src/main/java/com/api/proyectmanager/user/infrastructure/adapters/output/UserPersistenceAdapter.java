@@ -68,17 +68,6 @@ public class UserPersistenceAdapter implements UserRepository {
     }
 
     @Override
-    public void activateById(Integer id) {
-        // Buscamos la entidad de usuario por su ID usando el repositorio JPA
-        UserEntity entity = jpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
-        // Activamos o desactivamos el usuario según su estado actual
-        entity.setIsActive(entity.getIsActive());
-        // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
-        jpaRepository.save(entity);
-    }
-
-    @Override
     public Optional<User> findByUsername(String username) {
         // Buscamos la entidad de usuario por su nombre de usuario usando el repositorio JPA
         return jpaRepository.findByUsername(username)
@@ -96,6 +85,12 @@ public class UserPersistenceAdapter implements UserRepository {
         // Buscamos la entidad de usuario por su ID usando el repositorio JPA
         return jpaRepository.findById(id)
                 .map(UserMapper::toDomain); // Convertimos la entidad encontrada a User y la retornamos envuelta en Optional
+    }
+
+   @Override
+    public void toggleActiveById(Integer id, Boolean active) {
+        // Llamamos al método del repositorio JPA para actualizar el estado activo del usuario por su ID
+        jpaRepository.updateStatus(id, active);
     }
 
     @Override

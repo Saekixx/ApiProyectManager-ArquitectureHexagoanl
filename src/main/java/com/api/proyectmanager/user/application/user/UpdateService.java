@@ -3,6 +3,7 @@ package com.api.proyectmanager.user.application.user;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
@@ -21,7 +22,7 @@ public class UpdateService {
     public void execute(Integer id, User userCambios) {
         // Validamos que el usuario exista antes de actualizarlo
         User userExistente = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("User with ID " + id + " does not exist."));
+            .orElseThrow(() -> new BusinessException("Usuario con ID " + id + " no existe."));
         // Si se envia una contraseña nueva, la encriptamos antes de actualizarla
         if (userCambios.getPassword() != null && !userCambios.getPassword().isEmpty()) {
             userCambios.setPassword(passwordEncoder.encode(userCambios.getPassword()));

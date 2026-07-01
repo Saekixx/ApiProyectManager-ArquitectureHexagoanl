@@ -2,6 +2,7 @@ package com.api.proyectmanager.user.application.user;
 
 import org.springframework.stereotype.Service;
 
+import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.Rol;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
@@ -23,7 +24,7 @@ public class SaveService {
     public User save(User user, Integer rolId) {
         // Validar que el email no sea duplicado
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("El correo electrónico ya está en uso");
+            throw new BusinessException("El correo electrónico ya está en uso");
         }
         // Rol por defecto si no se proporciona un rolId
         Rol rol;
@@ -31,11 +32,11 @@ public class SaveService {
         if (rolId != null) {
         rol = rolRepository.findById(rolId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Rol no encontrado"));
+                        new BusinessException("Rol no encontrado"));
         } else {
         rol = rolRepository.findByName(ROL_DEFAULT)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Rol COLABORADOR no encontrado"));
+                        new BusinessException("Rol COLABORADOR no encontrado"));
         }
         // Asignar el rol al usuario y guardarlo en el repositorio
         user.setRol(rol);

@@ -2,6 +2,7 @@ package com.api.proyectmanager.user.application.user;
 
 import org.springframework.stereotype.Service;
 
+import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
@@ -16,6 +17,6 @@ public class FindByEmailService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException("Usuario no encontrado con el email: " + email));
     }
 }
