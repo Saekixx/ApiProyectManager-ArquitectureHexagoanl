@@ -6,11 +6,11 @@ import com.api.proyectmanager.project.domain.ProjectMiembro;
 import com.api.proyectmanager.project.domain.ports.ProjectMemberRepository;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 
-public class findAllMembersByProjectId {
+public class FindAllMembersByProjectId {
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
 
-    public findAllMembersByProjectId(ProjectMemberRepository projectMemberRepository, ProjectRepository projectRepository) {
+    public FindAllMembersByProjectId(ProjectMemberRepository projectMemberRepository, ProjectRepository projectRepository) {
         this.projectMemberRepository = projectMemberRepository;
         this.projectRepository = projectRepository;
     }

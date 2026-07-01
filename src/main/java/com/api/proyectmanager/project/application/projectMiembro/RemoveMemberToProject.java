@@ -7,11 +7,11 @@ import com.api.proyectmanager.project.domain.ports.ProjectMemberRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
 
 @Service
-public class RemoveMemberFromProject {
+public class RemoveMemberToProject {
     private final ProjectMemberRepository projectMemberRepository; // Repositorio para manejar la persistencia de miembros del proyecto (PORTS)
 
     // Constructor que inyecta el repositorio de miembros del proyecto
-    public RemoveMemberFromProject(ProjectMemberRepository projectMemberRepository) {
+    public RemoveMemberToProject(ProjectMemberRepository projectMemberRepository) {
         this.projectMemberRepository = projectMemberRepository;
     }
 
