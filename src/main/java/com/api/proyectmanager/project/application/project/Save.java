@@ -13,7 +13,7 @@ import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("projectSave")
 public class Save {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)

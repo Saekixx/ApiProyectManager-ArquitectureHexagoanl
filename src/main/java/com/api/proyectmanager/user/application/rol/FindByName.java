@@ -1,12 +1,15 @@
 package com.api.proyectmanager.user.application.rol;
 
+import org.springframework.stereotype.Service;
+
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 
-public class FindByNameService {
+@Service("rolFindByName")
+public class FindByName {
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)
 
     // Constructor para inyectar el repositorio de roles
-    public FindByNameService(RolRepository rolRepository) {
+    public FindByName(RolRepository rolRepository) {
         this.rolRepository = rolRepository;
     }
 

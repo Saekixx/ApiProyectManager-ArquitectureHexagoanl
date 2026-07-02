@@ -6,7 +6,7 @@ import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("userFindByEmail")
 public class FindByEmail {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 

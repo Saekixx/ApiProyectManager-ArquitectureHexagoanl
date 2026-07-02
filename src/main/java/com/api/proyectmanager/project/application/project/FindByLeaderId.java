@@ -8,7 +8,7 @@ import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
 
-@Service
+@Service("projectFindByLeaderId")
 public class FindByLeaderId {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 

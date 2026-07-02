@@ -6,7 +6,7 @@ import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
 
-@Service
+@Service("projectUpdate")
 public class Update {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 

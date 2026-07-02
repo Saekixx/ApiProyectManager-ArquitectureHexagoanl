@@ -8,7 +8,7 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("userSave")
 public class Save {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)

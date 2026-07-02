@@ -7,7 +7,7 @@ import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("userUpdate")
 public class Update {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
     private final PasswordEncoder passwordEncoder; // Inyección de PasswordEncoder para encriptar contraseñas

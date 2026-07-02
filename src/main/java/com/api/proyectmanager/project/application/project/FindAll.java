@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 
-@Service
+@Service("projectFindAll")
 public class FindAll {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 

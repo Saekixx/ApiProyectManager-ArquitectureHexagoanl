@@ -6,7 +6,7 @@ import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("projectChangeLeaderById")
 public class ChangeLeaderById {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
     private final UserRepository userRepository;    // Repositorio de usuarios (PORTS)

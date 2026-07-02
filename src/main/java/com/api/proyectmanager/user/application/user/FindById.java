@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@Service("userFindById")
 public class FindById {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 
