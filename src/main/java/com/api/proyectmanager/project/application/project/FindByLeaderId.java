@@ -17,7 +17,10 @@ public class FindByLeaderId {
     }
 
     public List<Project> execute(Integer leaderId) {
-        return projectRepository.findByLeaderId(leaderId)
-                .orElseThrow(() -> new BusinessException("Projectos no encontrados para el ID de líder: " + leaderId));
+        List<Project> projects = projectRepository.findByLeaderId(leaderId);
+        if (projects.isEmpty()) {
+            throw new BusinessException("No se encontraron proyectos para el líder con ID: " + leaderId);
+        }
+        return projects;
     }
 }

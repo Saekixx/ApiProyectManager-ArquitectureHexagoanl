@@ -1,5 +1,6 @@
 package com.api.proyectmanager.project.application.projectMiembro;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ public class AddMemberToProject {
             }
             // CASO B: Si el usuario a existe en el proyecto pero está inactivo, lo reactivamos
             miembro.setIsActive(true);
+            miembro.setJoinedAt(LocalDateTime.now()); // Guardamos la fecha de reactivación del proyecto
+            miembro.setExitedAt(null); // Limpiamos la fecha de salida ya que ahora está activo nuevamente
             projectMemberRepository.addMemberToProject(miembro); // Guardamos la reactivación del miembro en el proyecto
             // Retornamos un mensaje indicando que el usuario ha sido reactivado exitosamente en el proyecto
             return "El usuario con ID " + userId + " ha sido reactivado exitosamente en el proyecto con ID " + projectId + ".";
@@ -57,6 +60,9 @@ public class AddMemberToProject {
         ProjectMiembro projectMiembro = new ProjectMiembro();
         projectMiembro.setProject(project); // Asignar el proyecto al miembro
         projectMiembro.setUser(user); // Asignar el usuario al miembro
+        projectMiembro.setIsActive(true); // Establecer el estado como activo
+        projectMiembro.setJoinedAt(LocalDateTime.now()); // Guardar la fecha de unión
+        projectMiembro.setExitedAt(null); // Limpiar la fecha de salida
         // Guardar la relación en el repositorio de miembros del proyecto
         projectMemberRepository.addMemberToProject(projectMiembro);
         // Retornar un mensaje indicando que el miembro fue agregado exitosamente

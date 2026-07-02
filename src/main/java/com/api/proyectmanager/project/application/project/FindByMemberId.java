@@ -17,7 +17,10 @@ public class FindByMemberId {
     }
 
     public List<Project> execute(Integer memberId) {
-        return projectRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BusinessException("Projectos no encontrados para el ID de miembro: " + memberId));
+        List<Project> projects = projectRepository.findByMemberId(memberId);
+        if (projects.isEmpty()) {
+            throw new BusinessException("No se encontraron proyectos para el miembro con ID: " + memberId);
+        }
+        return projects;
     }
 }

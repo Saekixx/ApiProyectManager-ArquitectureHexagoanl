@@ -21,7 +21,7 @@ public class ToggleActive {
         // Cambiamos el estado del proyecto
         Boolean newActiveState = project.toggleActive();
         // Guardamos el proyecto con su nuevo estado
-        projectRepository.update(project);
+        projectRepository.save(project);
         // Retornamos un mensaje indicando si el proyecto fue activado o desactivado
         if (newActiveState) {
             System.out.println("Proyecto con el ID " + projectId + " activado correctamente.");

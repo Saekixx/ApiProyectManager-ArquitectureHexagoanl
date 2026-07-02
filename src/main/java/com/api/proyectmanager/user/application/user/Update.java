@@ -30,6 +30,6 @@ public class Update {
         // Validamos campos que no se han enviado para mantener los datos existentes
         userExistente.actualizarDatosGenerales(userCambios.getUsername(), userCambios.getEmail(), userCambios.getFullname(), userCambios.getPassword());
         // Guardamos los cambios en el repositorio usando el puerto
-        userRepository.update(userExistente);
+        userRepository.save(userExistente);
     }
 }

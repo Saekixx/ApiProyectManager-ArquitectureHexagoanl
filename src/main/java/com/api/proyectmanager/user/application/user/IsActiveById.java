@@ -14,10 +14,9 @@ public class IsActiveById {
     }
 
     public Boolean isActiveById(Integer id) {
-        // Validar que el usuario exista antes de verificar si está activo
-        userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("El usuario con ID " + id + " no existe."));
-        // Verificar si el usuario está activo en el repositorio usando el puerto
-        return userRepository.isActiveById(id);
+        // Llamamos al puerto para buscar el usuario por su ID
+        return userRepository.findById(id)
+                .map(user -> user.getIsActive()) // Si existe, extraemos su boolean interno
+                .orElse(false);                  // Si no existe la fila, devolvemos false
     }
 }

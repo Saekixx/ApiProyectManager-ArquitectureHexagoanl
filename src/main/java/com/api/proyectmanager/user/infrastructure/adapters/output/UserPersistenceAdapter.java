@@ -9,20 +9,16 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.SpringDataUserRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserEntity;
-import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.rol.RolEntity;
-import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.rol.SpringDataRolRepository;
 import com.api.proyectmanager.user.infrastructure.adapters.output.mapper.user.UserMapper;
 
 // Adaptador para la persistencia de usuarios
 @Component
 public class UserPersistenceAdapter implements UserRepository {
     private final SpringDataUserRepository jpaRepository; // Repositorio JPA para la persistencia de usuarios
-    private final SpringDataRolRepository rolRepository; // Adaptador para la persistencia de roles
 
     // Inyección por constructor
-    public UserPersistenceAdapter(SpringDataUserRepository jpaRepository, SpringDataRolRepository rolRepository) {
+    public UserPersistenceAdapter(SpringDataUserRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.rolRepository = rolRepository;
     }
 
     /* Este adaptador implementa los métodos del puerto UserRepository para 
@@ -42,14 +38,6 @@ public class UserPersistenceAdapter implements UserRepository {
     public Boolean existsByEmail(String email) {
         // Verificamos si existe un usuario con el correo electrónico dado usando el repositorio JPA
         return jpaRepository.findByEmail(email).isPresent();
-    }
-
-    @Override
-    public void update(User user) {
-        // Convertimos el objeto User a UserEntity usando el mapper
-        UserEntity entity = UserMapper.toEntity(user);
-        // Guardamos la entidad en la base de datos usando el repositorio JPA
-        jpaRepository.save(entity);
     }
 
     @Override
@@ -87,30 +75,4 @@ public class UserPersistenceAdapter implements UserRepository {
                 .map(UserMapper::toDomain); // Convertimos la entidad encontrada a User y la retornamos envuelta en Optional
     }
 
-   @Override
-    public void toggleActiveById(Integer id, Boolean active) {
-        // Llamamos al método del repositorio JPA para actualizar el estado activo del usuario por su ID
-        jpaRepository.updateStatus(id, active);
-    }
-
-    @Override
-    public void changeRoleById(Integer userId, Integer rolId) {
-        // Buscamos la entidad de usuario por su ID usando el repositorio JPA
-        UserEntity entity = jpaRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + userId));
-        // Buscamos el rol correspondiente al rolId proporcionado usando el repositorio JPA
-        RolEntity rolEntity = rolRepository.findById(rolId)
-                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado con ID: " + rolId));
-        // Cambiamos el rol del usuario al nuevo rol proporcionado
-        entity.setRol(rolEntity);
-        // Guardamos la entidad actualizada en la base de datos usando el repositorio JPA
-        jpaRepository.save(entity);
-    }
-
-    @Override
-    public Boolean isActiveById(Integer id) {
-        // Verificamos si el usuario con el ID proporcionado está activo usando el repositorio JPA
-        return jpaRepository.isUserActive(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
-    }
 }

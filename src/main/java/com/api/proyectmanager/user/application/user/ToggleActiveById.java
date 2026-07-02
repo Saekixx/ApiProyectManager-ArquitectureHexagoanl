@@ -22,7 +22,7 @@ public class ToggleActiveById {
         // Cambiamos el estado activo del usuario (si estaba activo, lo desactivamos y viceversa)
         Boolean newActiveState = user.toggleActive();
         // Le decimos al puerto que guarde al usuario con su nuevo estado
-        userRepository.update(user);
+        userRepository.save(user);
         // Retornamos un mensaje indicando si el usuario fue activado o desactivado
         if (newActiveState) {
             return "Usuario con el ID " + id + " activado correctamente.";

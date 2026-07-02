@@ -4,23 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.proyectmanager.project.domain.Project;
+import com.api.proyectmanager.user.domain.User;
 
 public interface ProjectRepository {
-    // Puerto para guardar un proyecto
+    // Definición de métodos para la persistencia de proyectos (PORTS)
+    // Guarda o actualiza un proyecto en la base de datos
     Project save(Project project);
-    // Puerto para editar un proyecto existente
-    void update(Project project);
-    // Puerto para activar o desactivar un proyecto por su ID
-    Boolean toggleActive(Integer id);
-    // Cambiar el líder de un proyecto por su ID
-    void changeLeader(Integer projectId, Integer newLeaderId);
-    // Puerto para listar todos los proyectos
+    // Obtiene todos los proyectos
     List<Project> findAll();
-
-    // Puerto para obtener un proyecto por su ID
+    // Obtiene un proyecto por su ID
     Optional<Project> findById(Integer id);
-    // Puerto para listar todos los proyectos por líder
-    Optional<List<Project>> findByLeaderId(Integer leaderId);
-    // Puerto para listar todos los proyectos por miembro
-    Optional<List<Project>> findByMemberId(Integer memberId);
+    // Obtiene todos los proyectos liderados por un líder específico
+    List<Project> findByLeaderId(Integer leaderId);
+    // Obtiene todos los proyectos en los que un miembro específico está involucrado
+    List<Project> findByMemberId(Integer memberId);
+
+    // Cambia el líder de un proyecto
+    void changeLeader(Integer projectId, User newLeader); 
 }

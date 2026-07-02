@@ -1,5 +1,7 @@
 package com.api.proyectmanager.project.application.projectMiembro;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import com.api.proyectmanager.project.domain.ProjectMiembro;
@@ -25,6 +27,8 @@ public class RemoveMemberToProject {
         }
         // Modificamos el estado en el dominio (Desactivación lógica)
         projectMiembro.setIsActive(false);
+        // Guardamos la fecha de salida del proyecto
+        projectMiembro.setExitedAt(LocalDateTime.now()); 
         // Persistimos el cambio a través del puerto
         // Tu adaptador por dentro recibirá este objeto con isActive = false y ejecutará un UPDATE en la BD
         projectMemberRepository.removeMemberFromProject(projectMiembro);

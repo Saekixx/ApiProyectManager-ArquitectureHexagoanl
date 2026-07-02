@@ -19,10 +19,15 @@ public class ChangeRoleById {
 
     // Método para cambiar el rol de un usuario por su ID
     public void execute(Integer userId, Integer rolId) {
-        // Validar que el rol exista antes de cambiarlo
-        rolRepository.findById(rolId)
-                .orElseThrow(() -> new BusinessException("Rol no encontrado"));
-        // Cambiar el rol del usuario por su ID usando el puerto
-        userRepository.changeRoleById(userId, rolId);
+        // Validamos que el usuario exista antes de cambiar su rol
+        var userExistente = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException("Usuario con ID " + userId + " no existe."));
+        // Validamos que el rol exista antes de asignarlo al usuario
+        var rolExistente = rolRepository.findById(rolId)
+            .orElseThrow(() -> new BusinessException("Rol con ID " + rolId + " no existe."));
+        // Cambiamos el rol del usuario
+        userExistente.setRol(rolExistente);
+        // Guardamos los cambios en el repositorio usando el puerto
+        userRepository.save(userExistente);
     }
 }
