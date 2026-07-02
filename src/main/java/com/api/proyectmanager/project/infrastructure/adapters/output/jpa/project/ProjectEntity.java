@@ -1,10 +1,12 @@
 package com.api.proyectmanager.project.infrastructure.adapters.output.jpa.project;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.api.proyectmanager.project.infrastructure.adapters.output.jpa.projectMiembro.ProjectMiembroEntity;
 import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserEntity;
 
 import jakarta.persistence.*;
@@ -24,9 +26,14 @@ public class ProjectEntity {
     private String name;
     @Column(nullable = false)
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity leader; // Relación con la clase UserEntity (líder del proyecto)
+
+    @OneToMany(mappedBy = "project") // o la relación que estés usando
+    private List<ProjectMiembroEntity> projectMembers;
+
     @Column(nullable = false)
     private Boolean isActive = true;  
 

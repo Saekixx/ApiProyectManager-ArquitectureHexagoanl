@@ -1,6 +1,7 @@
 package com.api.proyectmanager.project.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.api.proyectmanager.user.domain.User;
 
@@ -10,18 +11,20 @@ public class Project {
     private String description;
     private Boolean isActive;
     private User leader; // Relación con User (líder del proyecto)
+    private List<ProjectMiembro> projectMembers;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Project() {}
 
-    public Project(Integer id, String name, String description, Boolean isActive, User leader, LocalDateTime createdAt,
+    public Project(Integer id, String name, String description, Boolean isActive, User leader, List<ProjectMiembro> projectMembers, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
         this.leader = leader;
+        this.projectMembers = projectMembers;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -64,6 +67,14 @@ public class Project {
 
     public void setLeader(User leader) {
         this.leader = leader;
+    }
+
+    public List<ProjectMiembro> getProjectMembers() {
+        return projectMembers;
+    }
+
+    public void setProjectMembers(List<ProjectMiembro> projectMembers) {
+        this.projectMembers = projectMembers;
     }
 
     public LocalDateTime getCreatedAt() {

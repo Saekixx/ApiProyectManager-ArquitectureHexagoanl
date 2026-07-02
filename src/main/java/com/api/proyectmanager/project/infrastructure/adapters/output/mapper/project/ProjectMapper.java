@@ -2,6 +2,7 @@ package com.api.proyectmanager.project.infrastructure.adapters.output.mapper.pro
 
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.infrastructure.adapters.output.jpa.project.ProjectEntity;
+import com.api.proyectmanager.project.infrastructure.adapters.output.mapper.projectMiembro.ProjectMiembroMapper;
 import com.api.proyectmanager.user.infrastructure.adapters.output.mapper.user.UserMapper;
 
 // Clase para mapear los proyectos de la base de datos a objetos de dominio y viceversa
@@ -17,6 +18,7 @@ public class ProjectMapper {
             entity.getDescription(),
             entity.getIsActive(),
             UserMapper.toDomain(entity.getLeader()), // Mapeo del líder del proyecto
+            ProjectMiembroMapper.toDomainList(entity.getProjectMembers()), // Mapeo de los miembros del proyecto
             entity.getCreatedAt(), 
             entity.getUpdatedAt()
         );
@@ -35,6 +37,13 @@ public class ProjectMapper {
         entity.setDescription(project.getDescription());
         entity.setIsActive(project.isActive());
         entity.setLeader(UserMapper.toEntity(project.getLeader())); // Mapeo del líder del proyecto
+        entity.setProjectMembers(ProjectMiembroMapper.toEntityList(project.getProjectMembers())); // Mapeo de los miembros del proyecto
+
+        // Aseguramos que cada miembro del proyecto tenga una referencia al proyecto
+        if (entity.getProjectMembers() != null) {
+            entity.getProjectMembers().forEach(member -> member.setProject(entity));
+        }
+        
         entity.setCreatedAt(project.getCreatedAt());
         entity.setUpdatedAt(project.getUpdatedAt());
         return entity;
