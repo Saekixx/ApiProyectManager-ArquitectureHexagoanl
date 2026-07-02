@@ -27,7 +27,10 @@ public class Save {
     }
 
     @Transactional
-    public void execute(Project project, Integer leaderId, List<Integer> memberIds) {
+    public void execute(Integer projectId, Integer leaderId, List<Integer> memberIds) {
+        // Validar que el proyecto exista en la base de datos
+        Project project = projectRepository.findById(projectId)
+                        .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado con ID: " + projectId));
         // Validar que el líder exista en la base de datos
         User leader = userRepository.findById(leaderId)
                         .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + leaderId));
@@ -40,7 +43,7 @@ public class Save {
         projectMiembro.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
         projectMiembro.setUser(leader); // Asociar el líder como miembro del proyecto
         projectMiembro.setIsActive(true); // Marcar al líder como miembro activo
-        projectMiembroRepository.addMemberToProject(projectMiembro); // Guardar el miembro en la base de datos
+        projectMiembroRepository.save(projectMiembro); // Guardar el miembro en la base de datos
         // Validar y registrar a los miembros proporcionados en la lista de IDs
         if (memberIds != null && !memberIds.isEmpty()) {
             for (Integer memberId : memberIds) {
@@ -54,7 +57,7 @@ public class Save {
                 projectMember.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
                 projectMember.setUser(member); // Asociar el miembro al proyecto
                 projectMember.setIsActive(true); // Marcar al miembro como activo
-                projectMiembroRepository.addMemberToProject(projectMember); // Guardar el miembro en la base de datos
+                projectMiembroRepository.save(projectMember); // Guardar el miembro en la base de datos
             }
         }  
     }

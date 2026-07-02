@@ -14,10 +14,10 @@ public class Update {
         this.projectRepository = projectRepository;
     }
 
-    public void execute(Integer id, Project updatedProject) {
+    public void execute(Integer projectId, Project updatedProject) {
         // Validar que el proyecto exista en la base de datos
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("El proyecto con ID " + id + " no existe."));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException("El proyecto con ID " + projectId + " no existe."));
         // Validamos campos que no se han enviado para mantener los datos existentes
         project.actualizarDatos(updatedProject.getName(),updatedProject.getDescription());
         // Guardamos los cambios en el repositorio usando el puerto

@@ -1,25 +1,30 @@
 package com.api.proyectmanager.project.application.projectMiembro;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.api.proyectmanager.project.domain.ProjectMiembro;
 import com.api.proyectmanager.project.domain.ports.ProjectMemberRepository;
-
+import com.api.proyectmanager.project.domain.ports.ProjectRepository;
+import com.api.proyectmanager.shared.domain.BusinessException;
 
 @Service
 public class FindActiveMembersByProjectId {
-    private final ProjectMemberRepository projectMemberRepository; // Repositorio para manejar la persistencia de miembros del proyecto (PORTS)
+    private final ProjectMemberRepository projectMemberRepository; // Repositorio de miembros del proyecto (PORTS)
+    private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 
-    // Constructor que inyecta el repositorio de miembros del proyecto
-    public FindActiveMembersByProjectId(ProjectMemberRepository projectMemberRepository) {
+    // Constructor para inyectar el repositorio de miembros del proyecto
+    public FindActiveMembersByProjectId(ProjectMemberRepository projectMemberRepository, ProjectRepository projectRepository) {
         this.projectMemberRepository = projectMemberRepository;
+        this.projectRepository = projectRepository;
     }
 
-    @Transactional(readOnly = true)
-    public Boolean execute(Integer projectId, Integer userId) {
-        // Llamamos al puerto para buscar si el usuario ya existe en el proyecto
-        return projectMemberRepository.findByProjectIdAndUserId(projectId, userId)
-                .map(miembro -> miembro.getIsActive()) // Si existe, extraemos su boolean interno
-                .orElse(false);                        // Si no existe la fila, devolvemos false
+    public List<ProjectMiembro> execute(Integer projectId) {
+        // Validamos que el proyecto exista
+        projectRepository.findById(projectId)
+            .orElseThrow(() -> new BusinessException("Proyecto no encontrado con ID: " + projectId));
+        // Obtenemos la lista de miembros activos del proyecto usando el puerto
+        return projectMemberRepository.findActiveMembersByProjectId(projectId);
     }
 }

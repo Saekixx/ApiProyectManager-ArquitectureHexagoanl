@@ -28,7 +28,7 @@ public class AddMemberToProject {
     }
 
     @Transactional
-    public String addMemberToProject(Integer projectId, Integer userId) {
+    public String execute(Integer projectId, Integer userId) {
         // Validar que el proyecto exista
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new BusinessException("El proyecto con ID " + projectId + " no existe."));
@@ -52,7 +52,7 @@ public class AddMemberToProject {
             miembro.setIsActive(true);
             miembro.setJoinedAt(LocalDateTime.now()); // Guardamos la fecha de reactivación del proyecto
             miembro.setExitedAt(null); // Limpiamos la fecha de salida ya que ahora está activo nuevamente
-            projectMemberRepository.addMemberToProject(miembro); // Guardamos la reactivación del miembro en el proyecto
+            projectMemberRepository.save(miembro); // Guardamos la reactivación del miembro en el proyecto
             // Retornamos un mensaje indicando que el usuario ha sido reactivado exitosamente en el proyecto
             return "El usuario con ID " + userId + " ha sido reactivado exitosamente en el proyecto con ID " + projectId + ".";
         }
@@ -64,7 +64,7 @@ public class AddMemberToProject {
         projectMiembro.setJoinedAt(LocalDateTime.now()); // Guardar la fecha de unión
         projectMiembro.setExitedAt(null); // Limpiar la fecha de salida
         // Guardar la relación en el repositorio de miembros del proyecto
-        projectMemberRepository.addMemberToProject(projectMiembro);
+        projectMemberRepository.save(projectMiembro);
         // Retornar un mensaje indicando que el miembro fue agregado exitosamente
         return "El usuario con ID " + userId + " ha sido agregado exitosamente al proyecto con ID " + projectId + ".";
     }

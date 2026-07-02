@@ -7,14 +7,14 @@ import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
 
 @Service
-public class ToggleActive {
+public class ToggleActiveById {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 
-    public ToggleActive(ProjectRepository projectRepository) {
+    public ToggleActiveById(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 
-    public void execute(Integer projectId) {
+    public String execute(Integer projectId) {
         //Buscamos si el proyecto existe
         Project project = projectRepository.findById(projectId)
                             .orElseThrow(() -> new BusinessException("El Proyecto con ID " + projectId + " no existe."));
@@ -24,9 +24,9 @@ public class ToggleActive {
         projectRepository.save(project);
         // Retornamos un mensaje indicando si el proyecto fue activado o desactivado
         if (newActiveState) {
-            System.out.println("Proyecto con el ID " + projectId + " activado correctamente.");
+            return "Proyecto con el ID " + projectId + " activado correctamente.";
         } else {
-            System.out.println("Proyecto con el ID " + projectId + " desactivado correctamente.");
+            return "Proyecto con el ID " + projectId + " desactivado correctamente.";
         }
     }
 }

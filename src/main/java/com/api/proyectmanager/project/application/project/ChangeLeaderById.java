@@ -7,12 +7,12 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
 @Service
-public class ChangeLeader {
+public class ChangeLeaderById {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
     private final UserRepository userRepository;    // Repositorio de usuarios (PORTS)
 
     // Constructor para inyectar los repositorios de proyectos y usuarios
-    public ChangeLeader(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ChangeLeaderById(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
     }

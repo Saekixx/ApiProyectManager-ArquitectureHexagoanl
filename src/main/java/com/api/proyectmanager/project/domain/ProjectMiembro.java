@@ -69,14 +69,4 @@ public class ProjectMiembro {
     public void setExitedAt(LocalDateTime exitedAt) {
         this.exitedAt = exitedAt;
     }
-
-    public Boolean toggleActive() {
-        this.isActive = !this.isActive;
-        if (!this.isActive) {
-            this.exitedAt = LocalDateTime.now(); // Actualizar la fecha de salida al desactivar
-        } else {
-            this.exitedAt = null; // Limpiar la fecha de salida al activar
-        }
-        return this.isActive;
-    }
 }
