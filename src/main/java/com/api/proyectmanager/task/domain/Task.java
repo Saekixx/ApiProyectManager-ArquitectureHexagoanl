@@ -45,6 +45,11 @@ public class Task {
         this.getState().completar(this);
     }
 
+    // Método para reabrir la tarea, delegando la lógica al estado actual de la tarea
+    public void reabrirTarea() {
+        this.getState().reabrir(this);
+    }
+
     // Metodo de uso interno para cambiar el estado de la tarea, usado por los estados del enum TaskStatus
     protected void changeState(TaskStatus nextState) {
         this.state = nextState;

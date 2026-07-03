@@ -17,6 +17,12 @@ public enum TaskStatus implements TaskState {
         }
 
         @Override
+        public void reabrir(Task task) {
+            // Regla de negocio: No se puede reabrir una tarea que está pendiente
+            throw new BusinessException("No puedes reabrir una tarea que aún está 'PENDIENTE'.");
+        }
+
+        @Override
         public TaskStatus getStatus() { return PENDIENTE; } // Mapea al valor base del Enum
     },
 
@@ -31,6 +37,12 @@ public enum TaskStatus implements TaskState {
         public void completar(Task task) {
             // Regla de negocio : Solo se puede completar si está en progreso
             task.changeState(COMPLETADA);
+        }
+
+        @Override
+        public void reabrir(Task task) {
+            // Regla de negocio: No se puede reabrir una tarea que está en progreso
+            throw new BusinessException("No puedes reabrir una tarea que aún está 'EN_PROGRESO'.");
         }
 
         @Override
@@ -51,6 +63,12 @@ public enum TaskStatus implements TaskState {
         }
 
         @Override
+        public void reabrir(Task task) {
+            // Regla de negocio: Solo se puede reabrir si está completada
+            task.changeState(EN_PROGRESO);
+        }
+
+        @Override
         public TaskStatus getStatus() { return COMPLETADA; } // Mapea al valor base del Enum
     },
 
@@ -65,6 +83,12 @@ public enum TaskStatus implements TaskState {
         public void completar(Task task) {
             // Regla de negocio: Si el tiempo venció y nunca la iniciaron, no pueden completarla de golpe
             throw new BusinessException("La tarea está 'ATRASADA' y no fue iniciada a tiempo. Pásala a 'EN_PROGRESO' para trabajar en ella.");
+        }
+
+        @Override
+        public void reabrir(Task task) {
+            // Regla de negocio: No se puede reabrir una tarea atrasada directamente, debe pasar a en progreso primero
+            throw new BusinessException("No puedes reabrir una tarea que está 'ATRASADA'. Debe pasar a 'EN_PROGRESO' primero.");
         }
 
         @Override

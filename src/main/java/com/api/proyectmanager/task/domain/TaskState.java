@@ -7,6 +7,8 @@ public interface TaskState {
     void iniciarProgreso(Task task) throws BusinessException;
     // Permite completar la tarea
     void completar(Task task) throws BusinessException;
+    // Permite reabrir la tarea si está completada
+    void reabrir(Task task) throws BusinessException;
 
     // Permite ver el estado actual de la tarea
     TaskStatus getStatus();
