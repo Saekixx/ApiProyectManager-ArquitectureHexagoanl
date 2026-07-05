@@ -22,5 +22,7 @@ public interface UserRepository {
     Boolean existsByEmail(String email);
     // Puerto para verificar si un nombre de usuario ya existe
     Boolean existsByUsername(String username);
+    // Puerto para saber si un usuario es admin
+    Boolean isAdmin(Integer userId);
     
 }

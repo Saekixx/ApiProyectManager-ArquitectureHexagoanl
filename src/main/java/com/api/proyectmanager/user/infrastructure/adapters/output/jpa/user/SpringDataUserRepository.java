@@ -10,10 +10,15 @@ import java.util.Optional;
 @Repository
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByEmail(String email);
-    Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);   
+
+    // Metodo para actualizar el estado de un usuario (activo/inactivo)
     @Modifying
     @Query("UPDATE UserEntity u SET u.isActive = :active WHERE u.id = :id")
     void updateStatus(@Param("id") Integer id, @Param("active") Boolean active);
+    // Metodo para verificar si un usuario está activo
     @Query("SELECT u.isActive FROM UserEntity u WHERE u.id = :id")
     Optional<Boolean> isUserActive(@Param("id") Integer id);
+    // Metodo para verificar si un usuario es admin
+    boolean existsByIdAndRole_Name(Integer userId, String roleName);
 }

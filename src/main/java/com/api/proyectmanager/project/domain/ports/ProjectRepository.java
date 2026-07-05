@@ -2,6 +2,7 @@ package com.api.proyectmanager.project.domain.ports;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.user.domain.User;
@@ -21,4 +22,10 @@ public interface ProjectRepository {
 
     // Cambia el líder de un proyecto
     void changeLeader(Integer projectId, User newLeader); 
+    // Verifica si un usuario es miembro de un proyecto específico
+    Boolean isUserMemberOfProject(Integer projectId, Integer userId);
+    // Verifica si una lista de usuarios son miembros de un proyecto específico
+    Boolean areUsersMembersOfProject(Integer projectId, Set<Integer> userIds);
+    // Verifica si un usuario es el líder de un proyecto específico
+    Boolean isProjectLeader(Integer projectId, Integer userId);
 }

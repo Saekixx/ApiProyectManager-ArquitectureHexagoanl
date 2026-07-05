@@ -2,6 +2,7 @@ package com.api.proyectmanager.project.infrastructure.adapters.output;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -94,5 +95,31 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         } else {
             throw new RuntimeException("El proyecto con ID " + projectId + " no existe.");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean isUserMemberOfProject(Integer projectId, Integer userId) {
+        // Verificamos si un usuario es miembro de un proyecto específico usando el repositorio JPA
+        return springDataProjectRepository.existsByIdAndMembers_Id(projectId, userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean areUsersMembersOfProject(Integer projectId, Set<Integer> userIds) {
+        // Verificamos si todos los usuarios de la lista son miembros de un proyecto específico
+        for (Integer userId : userIds) {
+            if (!isUserMemberOfProject(projectId, userId)) {
+                return false; // Si algún usuario no es miembro, retornamos false
+            }
+        }
+        return true; // Todos los usuarios son miembros del proyecto
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean isProjectLeader(Integer projectId, Integer userId) {
+        // Verificamos si un usuario es el líder de un proyecto específico usando el repositorio JPA
+        return springDataProjectRepository.existsByIdAndLeader_Id(projectId, userId);
     }
 }

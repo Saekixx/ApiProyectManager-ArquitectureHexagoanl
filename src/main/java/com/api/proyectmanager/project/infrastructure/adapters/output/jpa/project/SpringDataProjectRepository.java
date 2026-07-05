@@ -14,4 +14,8 @@ public interface SpringDataProjectRepository extends JpaRepository<ProjectEntity
     // Puerto para listar todos los proyectos por miembro
     @Query("SELECT p FROM ProjectEntity p JOIN p.projectMembers pm WHERE pm.user.id = :memberId")
     List<ProjectEntity> findByMemberId(@Param("memberId") Integer memberId);
+    // Puerto para verificar si un usuario es miembro de un proyecto específico 
+    Boolean existsByIdAndMembers_Id(Integer projectId, Integer userId);
+    // Puerto para verificar si un usuario es el líder de un proyecto específico
+    Boolean existsByIdAndLeader_Id(Integer projectId, Integer userId);
 }

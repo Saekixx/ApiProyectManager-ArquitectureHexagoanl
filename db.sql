@@ -43,6 +43,9 @@ create table task(
 	id int auto_increment primary key,
     name char(100) not null,
     description char(255) not null,
+    status char(30) default "PENDIENTE", -- PENDIENTE, EN_PROGRESO, COMPLETADA, ATRASADO (este estado se calcula en el backend)
+    due_date timestamp not null, -- Fecha y hora limite de entrega
+    isActive boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp ,
     project_id int references project(id) on delete cascade
