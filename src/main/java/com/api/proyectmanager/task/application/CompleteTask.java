@@ -1,10 +1,13 @@
 package com.api.proyectmanager.task.application;
 
+import org.springframework.stereotype.Service;
+
 import com.api.proyectmanager.shared.domain.BusinessException;
 import com.api.proyectmanager.task.domain.Task;
 import com.api.proyectmanager.task.domain.ports.TaskRepository;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
+@Service
 public class CompleteTask {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;

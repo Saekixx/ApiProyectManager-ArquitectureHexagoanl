@@ -31,7 +31,7 @@ public class ProjectEntity {
     @JoinColumn(name = "user_id")
     private UserEntity leader; // Relación con la clase UserEntity (líder del proyecto)
 
-    @OneToMany(mappedBy = "project") // o la relación que estés usando
+    @OneToMany(mappedBy = "project") // Relación con la clase ProjectMiembroEntity (miembros del proyecto)
     private List<ProjectMiembroEntity> projectMembers;
 
     @Column(nullable = false)

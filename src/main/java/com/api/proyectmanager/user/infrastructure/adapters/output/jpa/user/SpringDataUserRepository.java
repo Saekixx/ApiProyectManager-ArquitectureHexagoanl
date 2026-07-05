@@ -20,5 +20,5 @@ public interface SpringDataUserRepository extends JpaRepository<UserEntity, Inte
     @Query("SELECT u.isActive FROM UserEntity u WHERE u.id = :id")
     Optional<Boolean> isUserActive(@Param("id") Integer id);
     // Metodo para verificar si un usuario es admin
-    boolean existsByIdAndRole_Name(Integer userId, String roleName);
+    boolean existsByIdAndRol_Name(Integer userId, String roleName);
 }

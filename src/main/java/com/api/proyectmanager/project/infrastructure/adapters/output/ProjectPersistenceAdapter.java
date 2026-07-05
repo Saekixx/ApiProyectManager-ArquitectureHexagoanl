@@ -101,7 +101,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
     @Transactional(readOnly = true)
     public Boolean isUserMemberOfProject(Integer projectId, Integer userId) {
         // Verificamos si un usuario es miembro de un proyecto específico usando el repositorio JPA
-        return springDataProjectRepository.existsByIdAndMembers_Id(projectId, userId);
+        return springDataProjectRepository.existsByIdAndProjectMembers_Id(projectId, userId);
     }
 
     @Override

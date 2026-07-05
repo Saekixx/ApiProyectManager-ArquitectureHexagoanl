@@ -89,6 +89,6 @@ public class UserPersistenceAdapter implements UserRepository {
         // Verificamos si el usuario con el ID dado tiene el rol de admin usando el repositorio JPA
         if (userId == null) return false;
         // Retornamos true si existe un usuario con el ID dado y su rol es "ADMIN", de lo contrario retornamos false
-        return jpaRepository.existsByIdAndRole_Name(userId, "ADMIN");
+        return jpaRepository.existsByIdAndRol_Name(userId, "ADMIN");
     }
 }
