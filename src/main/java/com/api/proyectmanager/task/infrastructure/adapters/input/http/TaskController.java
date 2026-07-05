@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,6 +66,7 @@ public class TaskController {
     // Endpoint para crear una nueva tarea
     // /api/tasks/create?creatorId=10&projectId=5&assignedUserId=3,4,5
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> createTask(
         @RequestBody Task task, 
         @RequestParam Integer creatorId, 
@@ -78,6 +80,7 @@ public class TaskController {
     // Endpoint para actualizar una tarea existente
     // /api/tasks/update/12/project/5?creatorId=10
     @PutMapping("/update/{taskId}/project/{projectId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> updateTask(
         @PathVariable Integer taskId, 
         @PathVariable Integer projectId, 
@@ -91,6 +94,7 @@ public class TaskController {
     // Endpoint para asignar un miembro a una tarea
     // /api/tasks/assign-member/12/34?creatorId=10
     @PostMapping("/assign-member/{taskId}/{memberId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> assignMember(
         @PathVariable Integer taskId, 
         @PathVariable Integer memberId,
@@ -103,6 +107,7 @@ public class TaskController {
     // Endpoint para remover un miembro de una tarea
     // /api/tasks/remove-member/12/34?editorId=10
     @PostMapping("/remove-member/{taskId}/{memberId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> removeMember(
         @PathVariable Integer taskId, 
         @PathVariable Integer memberId, 
@@ -115,6 +120,7 @@ public class TaskController {
     // Endpoint para iniciar una tarea
     // /api/tasks/start/12?userId=10
     @PostMapping("/start/{taskId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> startTask(
         @PathVariable Integer taskId, 
         @RequestParam Integer userId
@@ -126,6 +132,7 @@ public class TaskController {
     // Endpoint para completar una tarea
     // /api/tasks/complete/12?userId=10
     @PostMapping("/complete/{taskId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> completeTask(
         @PathVariable Integer taskId, 
         @RequestParam Integer userId
@@ -137,6 +144,7 @@ public class TaskController {
     // Endpoint para reabrir una tarea
     // /api/tasks/reopen/12?userId=10
     @PostMapping("/reopen/{taskId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> reopenTask(
         @PathVariable Integer taskId, 
         @RequestParam Integer userId
@@ -148,6 +156,7 @@ public class TaskController {
     // Endpoint para obtener todas las tareas
     // /api/tasks/
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Task>>> findAll() {
         return ResponseEntity.ok(new Response<>(true, "Tareas encontradas.", findAllService.execute()));
     }
@@ -155,6 +164,7 @@ public class TaskController {
     // Endpoint para obtener una tarea por su ID
     // /api/tasks/task/12
     @GetMapping("/task/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(new Response<>(true, "Tarea encontrada.", findByIdService.execute(id)));
     }
@@ -162,6 +172,7 @@ public class TaskController {
     // Endpoint para obtener todas las tareas de un proyecto por su ID
     // /api/tasks/project/5
     @GetMapping("/project/{projectId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Task>>> findByProjectId(@PathVariable Integer projectId) {
         return ResponseEntity.ok(new Response<>(true, "Tareas del proyecto encontradas.", findByIdProjectService.execute(projectId)));
     }

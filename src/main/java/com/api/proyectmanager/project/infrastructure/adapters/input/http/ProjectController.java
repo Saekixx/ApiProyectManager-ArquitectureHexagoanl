@@ -3,6 +3,7 @@ package com.api.proyectmanager.project.infrastructure.adapters.input.http;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,7 @@ public class ProjectController {
 
 
     // Endpoint para obtener todos los proyectos
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<Response<List<Project>>> findAll() {
         return ResponseEntity.ok(new Response<>(true, "Proyectos encontrados.", findAllService.findAll()));
@@ -59,6 +61,7 @@ public class ProjectController {
 
     // Endpoint para crear un nuevo proyecto
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> createProject(@RequestParam Integer projectId, @RequestParam Integer leaderId, @RequestParam List<Integer> memberIds) {
             saveService.execute(projectId, leaderId, memberIds);
             return ResponseEntity.ok(new Response<>(true, "Proyecto creado correctamente."));
@@ -66,6 +69,7 @@ public class ProjectController {
 
     // Endpoint para actualizar un proyecto existente
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> updateProject(@PathVariable Integer id, @RequestBody Project updatedProject) {
         updateService.execute(id, updatedProject);
         return ResponseEntity.ok(new Response<>(true, "Proyecto actualizado correctamente."));
@@ -73,12 +77,14 @@ public class ProjectController {
     
     // Endpoint para obtener un proyecto por su ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Project>> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(new Response<>(true, "Proyecto encontrado.", findByIdService.execute(id)));
     }
 
     // Endpoint para cambiar el líder de un proyecto
     @PostMapping("/change-leader/{projectId}/{newLeaderId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> changeLeader(@PathVariable Integer projectId, @PathVariable Integer newLeaderId) {
         changeLeaderByIdService.execute(projectId, newLeaderId);
         return ResponseEntity.ok(new Response<>(true, "Líder del proyecto cambiado correctamente."));
@@ -86,6 +92,7 @@ public class ProjectController {
 
     // Endpoint para activar o desactivar un proyecto por su ID
     @PostMapping("/activate/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> activateProjectById(@PathVariable Integer id) {
         String result = toggleActiveByIdService.execute(id);
         return ResponseEntity.ok(new Response<>(true, result));
@@ -93,12 +100,14 @@ public class ProjectController {
 
     // Endpoint para obtener proyectos por ID de líder
     @GetMapping("/leader/{leaderId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Project>>> findByLeaderId(@PathVariable Integer leaderId) {
         return ResponseEntity.ok(new Response<>(true, "Proyectos encontrados por líder.", findByLeaderIdService.execute(leaderId)));
     }
 
     // Endpoint para obtener proyectos por ID de miembro
     @GetMapping("/member/{memberId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Project>>> findByMemberId(@PathVariable Integer memberId) {
         return ResponseEntity.ok(new Response<>(true, "Proyectos encontrados por miembro.", findByMemberIdService.execute(memberId)));
     }

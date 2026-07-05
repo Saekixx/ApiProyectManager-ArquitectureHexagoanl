@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,18 +43,21 @@ public class UserController {
 
     // Endpoint para obtener todos los usuarios
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<List<User>>> findAll() {
         return ResponseEntity.ok(new Response<>(true, "Usuarios encontrados.", findAllService.findAll()));
     }
 
     // Endpoint para obtener un usuario por su ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Optional<User>>> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(new Response<>(true, "Usuario encontrado.", findByIdService.findById(id)));
     }
 
     // Endpoint para editar un usuario por su ID
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> updateUserById(@PathVariable Integer id, @RequestBody User user) {
         updateService.execute(id, user);
         return ResponseEntity.ok(new Response<>(true, "Usuario actualizado correctamente."));
@@ -61,6 +65,7 @@ public class UserController {
 
     // Endpoint para activar o desactivar un usuario por su ID
     @PostMapping("/activate/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> activateUserById(@PathVariable Integer id) {
         String result = toggleActiveById.execute(id);
         return ResponseEntity.ok(new Response<>(true, result));
@@ -69,6 +74,7 @@ public class UserController {
 
     // Endpoint para cambiar el rol de un usuario por su ID
     @PostMapping("/rol/{userId}/{rolId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> changeRoleById(@PathVariable Integer userId, @PathVariable Integer rolId) {
         changeRoleByIdService.execute(userId, rolId);
         return ResponseEntity.ok(new Response<>(true, "Rol del usuario cambiado correctamente."));  
