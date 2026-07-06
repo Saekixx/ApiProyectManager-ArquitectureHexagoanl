@@ -53,6 +53,15 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Project> findAllActiveByUserId(Integer userId) {
+        // Obtenemos todos los proyectos activos desde la base de datos usando el repositorio JPA
+        List<ProjectEntity> entities = springDataProjectRepository.findAllActive(userId);
+        // Convertimos la lista de ProjectEntity a una lista de Project y la retornamos
+        return entities.stream().map(ProjectMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<Project> findById(Integer projectId) {
         // Buscamos el proyecto por ID usando el repositorio JPA
         Optional<ProjectEntity> entityOptional = springDataProjectRepository.findById(projectId);
@@ -101,7 +110,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
     @Transactional(readOnly = true)
     public Boolean isUserMemberOfProject(Integer projectId, Integer userId) {
         // Verificamos si un usuario es miembro de un proyecto específico usando el repositorio JPA
-        return springDataProjectRepository.existsByIdAndProjectMembers_Id(projectId, userId);
+        return springDataProjectRepository.existsByIdAndProjectMembers_IdAndIsActiveTrue(projectId, userId);
     }
 
     @Override
@@ -120,6 +129,6 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
     @Transactional(readOnly = true)
     public Boolean isProjectLeader(Integer projectId, Integer userId) {
         // Verificamos si un usuario es el líder de un proyecto específico usando el repositorio JPA
-        return springDataProjectRepository.existsByIdAndLeader_Id(projectId, userId);
+        return springDataProjectRepository.existsByIdAndLeader_IdAndIsActiveTrue(projectId, userId);
     }
 }

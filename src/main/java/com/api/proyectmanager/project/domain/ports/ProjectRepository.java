@@ -13,6 +13,8 @@ public interface ProjectRepository {
     Project save(Project project);
     // Obtiene todos los proyectos
     List<Project> findAll();
+    // Obtiene todo los proyectos activos del usuario
+    List<Project> findAllActiveByUserId(Integer userId);
     // Obtiene un proyecto por su ID
     Optional<Project> findById(Integer id);
     // Obtiene todos los proyectos liderados por un líder específico

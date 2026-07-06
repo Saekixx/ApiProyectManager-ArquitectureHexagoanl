@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.proyectmanager.project.application.project.ChangeLeaderById;
 import com.api.proyectmanager.project.application.project.FindAll;
+import com.api.proyectmanager.project.application.project.FindAllActiveByUserId;
 import com.api.proyectmanager.project.application.project.FindById;
 import com.api.proyectmanager.project.application.project.FindByLeaderId;
 import com.api.proyectmanager.project.application.project.FindByMemberId;
@@ -34,16 +35,18 @@ public class ProjectController {
     private final Save saveService;
     private final Update updateService;
     private final FindAll findAllService;
+    private final FindAllActiveByUserId findAllActiveService;
     private final FindById findByIdService;
     private final ToggleActiveById toggleActiveByIdService;
     private final FindByLeaderId findByLeaderIdService;
     private final FindByMemberId findByMemberIdService;
     private final ChangeLeaderById changeLeaderByIdService;
 
-    public ProjectController(Save saveService, Update updateService, FindAll findAllService, FindById findByIdService, ToggleActiveById toggleActiveByIdService, FindByLeaderId findByLeaderIdService, FindByMemberId findByMemberIdService, ChangeLeaderById changeLeaderByIdService) {
+    public ProjectController(Save saveService, Update updateService, FindAll findAllService, FindAllActiveByUserId findAllActiveService, FindById findByIdService, ToggleActiveById toggleActiveByIdService, FindByLeaderId findByLeaderIdService, FindByMemberId findByMemberIdService, ChangeLeaderById changeLeaderByIdService) {
         this.saveService = saveService;
         this.updateService = updateService;
         this.findAllService = findAllService;
+        this.findAllActiveService = findAllActiveService;
         this.findByIdService = findByIdService;
         this.toggleActiveByIdService = toggleActiveByIdService;
         this.findByLeaderIdService = findByLeaderIdService;
@@ -74,6 +77,13 @@ public class ProjectController {
         updateService.execute(id, updatedProject);
         return ResponseEntity.ok(new Response<>(true, "Proyecto actualizado correctamente."));
     }
+
+    // Enpoint para listar todos los proyectos activos por usuario
+    @GetMapping("/active/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
+    public ResponseEntity<Response<List<Project>>> findAllActive(@PathVariable Integer userId) {
+        return ResponseEntity.ok(new Response<>(true, "Proyectos activos encontrados.", findAllActiveService.execute(userId)));
+    }
     
     // Endpoint para obtener un proyecto por su ID
     @GetMapping("/{id}")
@@ -91,7 +101,7 @@ public class ProjectController {
     }
 
     // Endpoint para activar o desactivar un proyecto por su ID
-    @PostMapping("/activate/{id}")
+    @PostMapping("/toggle-active/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> activateProjectById(@PathVariable Integer id) {
         String result = toggleActiveByIdService.execute(id);

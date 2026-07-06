@@ -1,8 +1,11 @@
 package com.api.proyectmanager.task.application.usecases;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
+import com.api.proyectmanager.task.domain.Task;
 import com.api.proyectmanager.task.domain.TaskStatus;
 
 @Service
@@ -15,7 +18,7 @@ public class KanbaBoard {
 
     public TaskKanbanResponse execute(Integer projectId) {
         // Obtener todas las tareas asociadas al proyecto
-        var tasks = findByIdProjectUseCase.execute(projectId);
+        List<Task> tasks = findByIdProjectUseCase.execute(projectId);
 
         // Crear un objeto TaskKanbanResponse para agrupar las tareas por estado
         TaskKanbanResponse kanbanResponse = new TaskKanbanResponse();
