@@ -1,4 +1,4 @@
-package com.api.proyectmanager.task.application;
+package com.api.proyectmanager.task.application.usecases;
 
 import org.springframework.stereotype.Service;
 

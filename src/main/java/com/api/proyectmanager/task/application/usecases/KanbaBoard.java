@@ -1,0 +1,29 @@
+package com.api.proyectmanager.task.application.usecases;
+
+import org.springframework.stereotype.Service;
+
+import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
+import com.api.proyectmanager.task.domain.TaskStatus;
+
+@Service
+public class KanbaBoard {
+    private final FindByIdProject findByIdProjectUseCase;
+
+    public KanbaBoard(FindByIdProject findByIdProjectUseCase) {
+        this.findByIdProjectUseCase = findByIdProjectUseCase;
+    }
+
+    public TaskKanbanResponse execute(Integer projectId) {
+        // Obtener todas las tareas asociadas al proyecto
+        var tasks = findByIdProjectUseCase.execute(projectId);
+
+        // Crear un objeto TaskKanbanResponse para agrupar las tareas por estado
+        TaskKanbanResponse kanbanResponse = new TaskKanbanResponse();
+        kanbanResponse.setPendiente(tasks.stream().filter(task -> task.getState() == TaskStatus.PENDIENTE).toList());
+        kanbanResponse.setEnProgreso(tasks.stream().filter(task -> task.getState() == TaskStatus.EN_PROGRESO).toList());
+        kanbanResponse.setCompletada(tasks.stream().filter(task -> task.getState() == TaskStatus.COMPLETADA).toList());
+        kanbanResponse.setAtrasado(tasks.stream().filter(task -> task.getState() == TaskStatus.ATRASADO).toList());
+
+        return kanbanResponse;
+    }
+}

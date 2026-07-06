@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.proyectmanager.shared.adapters.http.Response;
-import com.api.proyectmanager.task.application.AssignMember;
-import com.api.proyectmanager.task.application.CompleteTask;
-import com.api.proyectmanager.task.application.FindAll;
-import com.api.proyectmanager.task.application.FindById;
-import com.api.proyectmanager.task.application.FindByIdProject;
-import com.api.proyectmanager.task.application.RemoveMember;
-import com.api.proyectmanager.task.application.ReopenTask;
-import com.api.proyectmanager.task.application.Save;
-import com.api.proyectmanager.task.application.StartTask;
-import com.api.proyectmanager.task.application.Update;
+import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
+import com.api.proyectmanager.task.application.usecases.AssignMember;
+import com.api.proyectmanager.task.application.usecases.CompleteTask;
+import com.api.proyectmanager.task.application.usecases.FindAll;
+import com.api.proyectmanager.task.application.usecases.FindById;
+import com.api.proyectmanager.task.application.usecases.FindByIdProject;
+import com.api.proyectmanager.task.application.usecases.FindByUserTask;
+import com.api.proyectmanager.task.application.usecases.KanbaBoard;
+import com.api.proyectmanager.task.application.usecases.RemoveMember;
+import com.api.proyectmanager.task.application.usecases.ReopenTask;
+import com.api.proyectmanager.task.application.usecases.Save;
+import com.api.proyectmanager.task.application.usecases.StartTask;
+import com.api.proyectmanager.task.application.usecases.Update;
 import com.api.proyectmanager.task.domain.Task;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +45,7 @@ public class TaskController {
     private final FindAll findAllService;
     private final FindById findByIdService;
     private final FindByIdProject findByIdProjectService;
+    private final FindByUserTask findByUserService;
     // Casos de uso para asignar y remover miembros de una tarea
     private final AssignMember assignMemberService;
     private final RemoveMember removeMemberService;
@@ -49,18 +53,22 @@ public class TaskController {
     private final StartTask startTaskService;
     private final CompleteTask completeTaskService;
     private final ReopenTask reopenTaskService;
+    // Casos de uso para el kanban board (agrupación de tareas por estado)
+    private final KanbaBoard kanbanBoardService;
 
-    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindById findByIdService, FindByIdProject findByIdProjectService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService) {
+    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindById findByIdService, FindByIdProject findByIdProjectService, FindByUserTask findByUserService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService, KanbaBoard kanbanBoardService) {
         this.saveTaskService = saveTaskService;
         this.updateTaskService = updateTaskService;
         this.findAllService = findAllService;
         this.findByIdService = findByIdService;
         this.findByIdProjectService = findByIdProjectService;
+        this.findByUserService = findByUserService;
         this.assignMemberService = assignMemberService;
         this.removeMemberService = removeMemberService;
         this.startTaskService = startTaskService;
         this.completeTaskService = completeTaskService;
         this.reopenTaskService = reopenTaskService;
+        this.kanbanBoardService = kanbanBoardService;
     }
 
     // Endpoint para crear una nueva tarea
@@ -175,5 +183,22 @@ public class TaskController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Task>>> findByProjectId(@PathVariable Integer projectId) {
         return ResponseEntity.ok(new Response<>(true, "Tareas del proyecto encontradas.", findByIdProjectService.execute(projectId)));
+    }
+
+    // Endpoint para obtener todas las tareas asignadas por el usuario autenticado
+    // /api/tasks/my-tasks
+    @GetMapping("/my-tasks")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
+    public ResponseEntity<Response<List<Task>>> findByAssignedUserId(@RequestParam Integer userId) {
+        return ResponseEntity.ok(new Response<>(true, "Tareas asignadas encontradas.", findByUserService.execute(userId)));
+    }
+
+
+    // Endpoint para agrupar las tareas por estado (Pendiente, En Progreso, Completada y Atrasado) para un proyecto específico
+    // /api/tasks/project/{projectId}/kanban
+    @GetMapping("/project/{projectId}/kanban")
+    public ResponseEntity<Response<TaskKanbanResponse>> getKanbanBoard(@PathVariable Integer projectId) {
+        TaskKanbanResponse kanbanResponse = kanbanBoardService.execute(projectId);
+        return ResponseEntity.ok(new Response<>(true, "Tablero Kanban encontrado.", kanbanResponse));
     }
 }

@@ -71,4 +71,13 @@ public class TaskPersistenceAdapter implements TaskRepository {
             jpaRepository.save(entity);
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findByAssignedUserId(Integer userId) {
+        // Buscamos las entidades de tarea asignadas a un usuario específico usando el repositorio JPA
+        List<TaskEntity> entities = jpaRepository.findByAssignedUsers_Id(userId);
+        // Convertimos la lista de entidades a una lista de objetos Task y la retornamos
+        return entities.stream().map(TaskMapper::toDomain).toList();
+    }
 }

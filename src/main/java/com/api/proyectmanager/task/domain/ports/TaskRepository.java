@@ -14,6 +14,8 @@ public interface TaskRepository {
     Optional<Task> findById(Integer id);
     // Puerto para listar todas las tareas asociadas a un proyecto específico
     List<Task> findByProjectId(Integer projectId);
+    // Puerto para listar todas las tareas asignadas a un usuario específico
+    List<Task> findByAssignedUserId(Integer userId);
     // Puerto para desactivar una tarea
     void deactivateTask(Integer taskId);
 }
