@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity // Habilita la seguridad a nivel de método, permitiendo el uso de anotaciones como @PreAuthorize y @PostAuthorize
 public class SecurityConfig {
     // Inyección de dependencias para JwtAuthenticationFilter
     private final JwtAuthenticationFilter jwtAuthFilter;

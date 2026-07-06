@@ -2,10 +2,14 @@ package com.api.proyectmanager.auth.infrastructure.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,10 +37,11 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Método para generar un token JWT a partir del nombre de usuario
-    public String generateToken(String username) {
+    // Método para generar un token JWT a partir del nombre de usuario y el rol del usuario
+    public String generateToken(String username, String rol) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(username) // Establecemos el nombre de usuario como sujeto del token
+                .claim("rol", rol) // Mapeamos el rol al token
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)

@@ -42,6 +42,7 @@ public class UserController {
     }
 
     // Endpoint para obtener todos los usuarios
+    // /api/users/
     @GetMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<List<User>>> findAll() {
@@ -49,6 +50,7 @@ public class UserController {
     }
 
     // Endpoint para obtener un usuario por su ID
+    // /api/users/{id}
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Optional<User>>> findById(@PathVariable Integer id) {

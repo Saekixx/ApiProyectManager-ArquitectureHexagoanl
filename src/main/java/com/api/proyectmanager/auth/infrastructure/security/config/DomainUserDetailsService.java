@@ -28,7 +28,7 @@ public class DomainUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(domainUser.getEmail()) 
                 .password(domainUser.getPassword())  
-                .roles(domainUser.getRol().getName()) // ADMIN, USER, LEADER, etc.
+                .authorities(domainUser.getRol().getName()) // ADMIN, USER, LEADER, etc. (sin prefijo ROLE_)
                 .build();
     }
 }
