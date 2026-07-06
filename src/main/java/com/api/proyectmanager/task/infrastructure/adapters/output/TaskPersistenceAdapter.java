@@ -43,6 +43,15 @@ public class TaskPersistenceAdapter implements TaskRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Task> findAllActiveByUserId(Integer userId) {
+        // Obtenemos todas las entidades de tarea activas para un usuario específico usando el repositorio JPA
+        List<TaskEntity> entities = jpaRepository.findAllActiveByUserId(userId);
+        // Convertimos la lista de entidades a una lista de objetos Task y la retornamos
+        return entities.stream().map(TaskMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<Task> findById(Integer id) {
         // Buscamos la entidad de tarea por su ID usando el repositorio JPA
         Optional<TaskEntity> entityOptional = jpaRepository.findById(id);

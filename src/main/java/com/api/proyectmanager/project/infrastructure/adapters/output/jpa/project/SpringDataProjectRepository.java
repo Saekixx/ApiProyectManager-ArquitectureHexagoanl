@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SpringDataProjectRepository extends JpaRepository<ProjectEntity, Integer> {
     // Puerto para listar todos los proyectos activos
-    @Query("SELECT p FROM ProjectEntity p WHERE p.isActive = true AND p.leader.id = :userId")
+    @Query("SELECT DISTINCT p FROM ProjectEntity p JOIN p.projectMembers pm WHERE p.isActive = true AND pm.user.id = :userId")
     List<ProjectEntity> findAllActive(Integer userId);
 
     // Puerto para listar todos los proyectos activos por líder 

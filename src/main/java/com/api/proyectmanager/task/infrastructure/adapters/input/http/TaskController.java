@@ -14,6 +14,7 @@ import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
 import com.api.proyectmanager.task.application.usecases.AssignMember;
 import com.api.proyectmanager.task.application.usecases.CompleteTask;
 import com.api.proyectmanager.task.application.usecases.FindAll;
+import com.api.proyectmanager.task.application.usecases.FindAllActiveByUserId;
 import com.api.proyectmanager.task.application.usecases.FindById;
 import com.api.proyectmanager.task.application.usecases.FindByIdProject;
 import com.api.proyectmanager.task.application.usecases.FindByUserTask;
@@ -43,6 +44,7 @@ public class TaskController {
     private final Update updateTaskService;
     // Casos de uso para obtener tareas (lectura)
     private final FindAll findAllService;
+    private final FindAllActiveByUserId findAllActiveByUserIdService;
     private final FindById findByIdService;
     private final FindByIdProject findByIdProjectService;
     private final FindByUserTask findByUserService;
@@ -56,10 +58,11 @@ public class TaskController {
     // Casos de uso para el kanban board (agrupación de tareas por estado)
     private final KanbaBoard kanbanBoardService;
 
-    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindById findByIdService, FindByIdProject findByIdProjectService, FindByUserTask findByUserService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService, KanbaBoard kanbanBoardService) {
+    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindAllActiveByUserId findAllActiveByUserIdService, FindById findByIdService, FindByIdProject findByIdProjectService, FindByUserTask findByUserService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService, KanbaBoard kanbanBoardService) {
         this.saveTaskService = saveTaskService;
         this.updateTaskService = updateTaskService;
         this.findAllService = findAllService;
+        this.findAllActiveByUserIdService = findAllActiveByUserIdService;
         this.findByIdService = findByIdService;
         this.findByIdProjectService = findByIdProjectService;
         this.findByUserService = findByUserService;
@@ -167,6 +170,14 @@ public class TaskController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<List<Task>>> findAll() {
         return ResponseEntity.ok(new Response<>(true, "Tareas encontradas.", findAllService.execute()));
+    }
+
+    // Endpoint para obtener todas las tareas activas de un usuario específico
+    // /api/tasks/active/10
+    @GetMapping("/active/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
+    public ResponseEntity<Response<List<Task>>> findAllActiveByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(new Response<>(true, "Tareas activas encontradas.", findAllActiveByUserIdService.execute(userId)));
     }
 
     // Endpoint para obtener una tarea por su ID

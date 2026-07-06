@@ -10,6 +10,8 @@ public interface TaskRepository {
     Task save(Task task);
     // Puerto para listar todas las tareas
     List<Task> findAll();
+    // Puerto para listar todas las tareas activas de un usuario específico
+    List<Task> findAllActiveByUserId(Integer userId);
     // Puerto para obtener una tarea por su ID
     Optional<Task> findById(Integer id);
     // Puerto para listar todas las tareas asociadas a un proyecto específico
