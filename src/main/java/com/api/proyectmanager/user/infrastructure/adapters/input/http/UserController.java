@@ -58,7 +58,8 @@ public class UserController {
     }
 
     // Endpoint para editar un usuario por su ID
-    @PutMapping("/edit/{id}")
+    // /api/users/{id}
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> updateUserById(@PathVariable Integer id, @RequestBody User user) {
         updateService.execute(id, user);

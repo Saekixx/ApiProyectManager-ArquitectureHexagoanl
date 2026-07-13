@@ -1,7 +1,7 @@
 package com.api.proyectmanager.project.infrastructure.adapters.output.mapper.projectMiembro;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.api.proyectmanager.project.domain.ProjectMiembro;
@@ -26,11 +26,11 @@ public class ProjectMiembroMapper {
     }
 
     // Metodo para mapear de una lista de ProjectMiembroEntity a una lista de ProjectMiembro
-    public static List<ProjectMiembro> toDomainList(List<ProjectMiembroEntity> entities) {
-        if (entities == null) return Collections.emptyList();
+    public static Set<ProjectMiembro> toDomainList(Set<ProjectMiembroEntity> entities) {
+        if (entities == null) return Collections.emptySet();
         return entities.stream()
                        .map(ProjectMiembroMapper::toDomain)
-                       .collect(Collectors.toList());
+                       .collect(Collectors.toSet());
     }
 
     // Metodo para mapear de ProjectMiembro a ProjectMiembroEntity
@@ -48,10 +48,10 @@ public class ProjectMiembroMapper {
     }
 
     // Metodo para mapear de una lista de ProjectMiembro a una lista de ProjectMiembroEntity
-    public static List<ProjectMiembroEntity> toEntityList(List<ProjectMiembro> domainList) {
-        if (domainList == null) return Collections.emptyList();
+    public static Set<ProjectMiembroEntity> toEntityList(Set<ProjectMiembro> domainList) {
+        if (domainList == null) return Collections.emptySet();
         return domainList.stream()
                          .map(ProjectMiembroMapper::toEntity)
-                         .collect(Collectors.toList());
+                         .collect(Collectors.toSet());
     }
 }

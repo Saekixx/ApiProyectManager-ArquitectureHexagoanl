@@ -7,16 +7,17 @@ import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
 @Service("userFindByEmail")
-public class FindByEmail {
+public class IdFindByEmail {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 
     // Constructor para inyectar el repositorio de usuarios
-    public FindByEmail(UserRepository userRepository) {
+    public IdFindByEmail(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
+    public Integer execute(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException("Usuario no encontrado con el email: " + email));
+        return user.getId();
     }
 }

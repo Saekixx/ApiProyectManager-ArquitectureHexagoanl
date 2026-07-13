@@ -5,16 +5,18 @@ import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.proyectmanager.shared.adapters.http.Response;
+import com.api.proyectmanager.task.application.dto.TaskCreateRequest;
 import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
+import com.api.proyectmanager.task.application.dto.TaskUpdateRequest;
 import com.api.proyectmanager.task.application.usecases.AssignMember;
 import com.api.proyectmanager.task.application.usecases.CompleteTask;
 import com.api.proyectmanager.task.application.usecases.FindAll;
-import com.api.proyectmanager.task.application.usecases.FindAllActiveByUserId;
 import com.api.proyectmanager.task.application.usecases.FindById;
 import com.api.proyectmanager.task.application.usecases.FindByIdProject;
 import com.api.proyectmanager.task.application.usecases.FindByUserTask;
@@ -25,6 +27,7 @@ import com.api.proyectmanager.task.application.usecases.Save;
 import com.api.proyectmanager.task.application.usecases.StartTask;
 import com.api.proyectmanager.task.application.usecases.Update;
 import com.api.proyectmanager.task.domain.Task;
+import com.api.proyectmanager.user.application.user.IdFindByEmail;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,10 +47,9 @@ public class TaskController {
     private final Update updateTaskService;
     // Casos de uso para obtener tareas (lectura)
     private final FindAll findAllService;
-    private final FindAllActiveByUserId findAllActiveByUserIdService;
     private final FindById findByIdService;
     private final FindByIdProject findByIdProjectService;
-    private final FindByUserTask findByUserService;
+    private final FindByUserTask findByUserTaskService;
     // Casos de uso para asignar y remover miembros de una tarea
     private final AssignMember assignMemberService;
     private final RemoveMember removeMemberService;
@@ -57,48 +59,51 @@ public class TaskController {
     private final ReopenTask reopenTaskService;
     // Casos de uso para el kanban board (agrupación de tareas por estado)
     private final KanbaBoard kanbanBoardService;
+    private final IdFindByEmail idFindByEmailService; // Servicio para encontrar ID de usuario por email
 
-    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindAllActiveByUserId findAllActiveByUserIdService, FindById findByIdService, FindByIdProject findByIdProjectService, FindByUserTask findByUserService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService, KanbaBoard kanbanBoardService) {
+    public TaskController(Save saveTaskService, Update updateTaskService, FindAll findAllService, FindById findByIdService, FindByIdProject findByIdProjectService, FindByUserTask findByUserTaskService, AssignMember assignMemberService, RemoveMember removeMemberService, StartTask startTaskService, CompleteTask completeTaskService, ReopenTask reopenTaskService, KanbaBoard kanbanBoardService, IdFindByEmail idFindByEmailService) {
         this.saveTaskService = saveTaskService;
         this.updateTaskService = updateTaskService;
         this.findAllService = findAllService;
-        this.findAllActiveByUserIdService = findAllActiveByUserIdService;
         this.findByIdService = findByIdService;
         this.findByIdProjectService = findByIdProjectService;
-        this.findByUserService = findByUserService;
+        this.findByUserTaskService = findByUserTaskService;
         this.assignMemberService = assignMemberService;
         this.removeMemberService = removeMemberService;
         this.startTaskService = startTaskService;
         this.completeTaskService = completeTaskService;
         this.reopenTaskService = reopenTaskService;
         this.kanbanBoardService = kanbanBoardService;
+        this.idFindByEmailService = idFindByEmailService;
     }
 
     // Endpoint para crear una nueva tarea
-    // /api/tasks/create?creatorId=10&projectId=5&assignedUserId=3,4,5
-    @PostMapping("/create")
+    // /api/tasks/?creatorId=10&projectId=5&assignedUserId=3,4,5
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> createTask(
         @RequestBody Task task, 
-        @RequestParam Integer creatorId, 
-        @RequestParam Integer projectId, 
-        @RequestParam Set<Integer> assignedUserId
+        @RequestBody TaskCreateRequest dto,
+        Authentication authentication
     ) {
-        saveTaskService.execute(task, projectId, assignedUserId, creatorId);
+        // Obtenemos el email del usuario autenticado
+        String userEmail = authentication.getName();
+        // Obtenemos el ID del usuario autenticado usando su email
+        Integer currentUserId = idFindByEmailService.execute(userEmail);
+        // Obtenemos el ID del proyecto y los IDs de los usuarios asignados desde la solicitud
+        saveTaskService.execute(dto, currentUserId);
         return ResponseEntity.ok(new Response<>(true, "Tarea creada exitosamente."));
     }
     
     // Endpoint para actualizar una tarea existente
-    // /api/tasks/update/12/project/5?creatorId=10
-    @PutMapping("/update/{taskId}/project/{projectId}")
+    // /api/tasks/12
+    @PutMapping("/{taskId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> updateTask(
         @PathVariable Integer taskId, 
-        @PathVariable Integer projectId, 
-        @RequestParam Integer creatorId,
-        @RequestBody Task task
+        @RequestBody TaskUpdateRequest dto
     ) {
-        updateTaskService.execute(taskId, projectId, task, creatorId);
+        updateTaskService.execute(taskId, dto);
         return ResponseEntity.ok(new Response<>(true, "Tarea actualizada exitosamente."));
     }
 
@@ -117,7 +122,7 @@ public class TaskController {
 
     // Endpoint para remover un miembro de una tarea
     // /api/tasks/remove-member/12/34?editorId=10
-    @PostMapping("/remove-member/{taskId}/{memberId}")
+    @PostMapping("/remove-member/{taskId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Void>> removeMember(
         @PathVariable Integer taskId, 
@@ -172,17 +177,9 @@ public class TaskController {
         return ResponseEntity.ok(new Response<>(true, "Tareas encontradas.", findAllService.execute()));
     }
 
-    // Endpoint para obtener todas las tareas activas de un usuario específico
-    // /api/tasks/active/10
-    @GetMapping("/active/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
-    public ResponseEntity<Response<List<Task>>> findAllActiveByUserId(@PathVariable Integer userId) {
-        return ResponseEntity.ok(new Response<>(true, "Tareas activas encontradas.", findAllActiveByUserIdService.execute(userId)));
-    }
-
     // Endpoint para obtener una tarea por su ID
-    // /api/tasks/task/12
-    @GetMapping("/task/{id}")
+    // /api/tasks/12
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
     public ResponseEntity<Response<Task>> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(new Response<>(true, "Tarea encontrada.", findByIdService.execute(id)));
@@ -200,8 +197,10 @@ public class TaskController {
     // /api/tasks/my-tasks
     @GetMapping("/my-tasks")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
-    public ResponseEntity<Response<List<Task>>> findByAssignedUserId(@RequestParam Integer userId) {
-        return ResponseEntity.ok(new Response<>(true, "Tareas asignadas encontradas.", findByUserService.execute(userId)));
+    public ResponseEntity<Response<List<Task>>> findByAssignedUserId(Authentication authentication) {
+        String userEmail = authentication.getName();
+        Integer userId = idFindByEmailService.execute(userEmail);
+        return ResponseEntity.ok(new Response<>(true, "Tareas asignadas encontradas.", findByUserTaskService.execute(userId)));
     }
 
 

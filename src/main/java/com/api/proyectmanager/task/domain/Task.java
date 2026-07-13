@@ -35,6 +35,20 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
+    // Método para actualizar los datos del una tarea, excepto el rol y el estado activo
+    public void actualizarDatosGenerales(String name, String description, LocalDateTime dueDate) {
+        if (name != null && !name.isBlank() ) this.name = name;
+        if (description != null && !description.isBlank() ) this.description = description;
+        if (dueDate != null && !dueDate.isBefore(LocalDateTime.now())) this.dueDate = dueDate;
+    }
+
+    // Metodo para activar o desactivar el usuario
+    public Boolean toggleActive() {
+        this.isActive = !this.isActive;
+        this.updatedAt = LocalDateTime.now(); // Actualizar la fecha de actualización al cambiar el estado
+        return this.isActive;
+    }
+
     // Método para comenzar el trabajo en la tarea, delegando la lógica al estado actual de la tarea
     public void comenzarTrabajo() {
         this.getState().iniciarProgreso(this);

@@ -5,12 +5,19 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByUsername(String username);   
+
+    // Metodo para obtener todos los usuarios por un conjunto de IDs
+    @Query("SELECT u FROM UserEntity u WHERE u.id IN :ids")
+    List<UserEntity> findAllByIds(Set<Integer> ids);
 
     // Metodo para actualizar el estado de un usuario (activo/inactivo)
     @Modifying

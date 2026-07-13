@@ -19,7 +19,7 @@ public class ProjectMiembroEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "project")
+    @JoinColumn(name = "project_id")
     private ProjectEntity project; // Relación con Project
     @ManyToOne
     @JoinColumn(name = "user_id")

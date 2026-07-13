@@ -1,6 +1,8 @@
 package com.api.proyectmanager.project.application.project;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,37 +29,52 @@ public class Save {
     }
 
     @Transactional
-    public void execute(Integer projectId, Integer leaderId, List<Integer> memberIds) {
-        // Validar que el proyecto exista en la base de datos
-        Project project = projectRepository.findById(projectId)
-                        .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado con ID: " + projectId));
+    public void execute(Integer leaderId, List<Integer> memberIds, String name, String description) {
         // Validar que el líder exista en la base de datos
         User leader = userRepository.findById(leaderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + leaderId));
-        // Asignar el líder al proyecto 
-        project.setLeader(leader);
-        // Guardar el proyecto en la base de datos
+                        .orElseThrow(() -> new BusinessException("Usuario no encontrado con ID: " + leaderId));
+
+        // Crear y guardar el nuevo proyecto
+        Project project = new Project();
+        project.setName(name); // Establecer el nombre del proyecto
+        project.setDescription(description); // Establecer la descripción del proyecto
+        project.setLeader(leader); // Asociar el líder al proyecto
+        project.setActive(true); // Marcar el proyecto como activo
         Project proyectoGuardado = projectRepository.save(project);
-        // Registrar automáticamente al Líder como miembro activo del proyecto
+
+        // Crear y guardar el ProjectMiembro para el líder del proyecto
         ProjectMiembro projectMiembro = new ProjectMiembro();
         projectMiembro.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
         projectMiembro.setUser(leader); // Asociar el líder como miembro del proyecto
         projectMiembro.setIsActive(true); // Marcar al líder como miembro activo
         projectMiembroRepository.save(projectMiembro); // Guardar el miembro en la base de datos
-        // Validar y registrar a los miembros proporcionados en la lista de IDs
+
+        // Validar y registrar a los miembros optimizadamente
         if (memberIds != null && !memberIds.isEmpty()) {
-            for (Integer memberId : memberIds) {
-                // Evitar agregar al líder como miembro nuevamente
-                if (memberId.equals(leaderId)) continue; 
-                // Validar que el miembro exista en la base de datos
-                User member = userRepository.findById(memberId)
-                        .orElseThrow(() -> new BusinessException("Usuario no encontrado con ID: " + memberId));   
-                // Crear y guardar un nuevo ProjectMiembro para cada miembro
-                ProjectMiembro projectMember = new ProjectMiembro(); // Crear una nueva instancia de ProjectMiembro para cada miembro
-                projectMember.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
-                projectMember.setUser(member); // Asociar el miembro al proyecto
-                projectMember.setIsActive(true); // Marcar al miembro como activo
-                projectMiembroRepository.save(projectMember); // Guardar el miembro en la base de datos
+
+            // Filtrar los IDs de miembros para eliminar duplicados y excluir al líder
+            Set<Integer> uniqueMemberIds = memberIds.stream()
+                .filter(id -> !id.equals(leaderId))
+                .collect(Collectors.toSet());
+
+            if (!uniqueMemberIds.isEmpty()) {
+                // Obtener todos los miembros de la base de datos en una sola consulta
+                List<User> membersFetched = userRepository.findAllByIds(uniqueMemberIds);
+
+                // Validar que se hayan encontrado todos los IDs solicitados
+                if (membersFetched.size() != uniqueMemberIds.size()) {
+                    throw new BusinessException("Uno o más miembros especificados no existen en el sistema.");
+                }
+
+                // Registrar a cada miembro en el proyecto
+                for (User member : membersFetched) {
+                    ProjectMiembro projectMember = new ProjectMiembro();
+                    projectMember.setProject(proyectoGuardado);
+                    projectMember.setUser(member);
+                    projectMember.setIsActive(true);
+                    
+                    projectMiembroRepository.save(projectMember);
+                }
             }
         }  
     }
