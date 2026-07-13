@@ -1,12 +1,11 @@
 package com.api.proyectmanager.task.application.usecases;
 
-import org.springframework.stereotype.Service;
-
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.task.domain.Task;
 import com.api.proyectmanager.task.domain.ports.TaskRepository;
 
-@Service("TaskFindById")
+@UseCase
 public class FindById {
     private final TaskRepository taskRepository;
 

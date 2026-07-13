@@ -34,6 +34,21 @@ public class ProjectMiembroPersistenceAdapter implements ProjectMemberRepository
 
     @Override
     @Transactional
+    public List<ProjectMiembro> saveAll(List<ProjectMiembro> projectMembers) {
+        // Convertimos la lista de ProjectMiembro a una lista de ProjectMiembroEntity usando el mapper
+        List<ProjectMiembroEntity> entities = projectMembers.stream()
+                .map(ProjectMiembroMapper::toEntity)
+                .toList();
+        // Guardamos todas las entidades en la base de datos usando el repositorio JPA
+        List<ProjectMiembroEntity> savedEntities = projectMiembroJpaRepository.saveAll(entities);
+        // Convertimos la lista de entidades guardadas de nuevo a ProjectMiembro y la retornamos
+        return savedEntities.stream()
+                .map(ProjectMiembroMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    @Transactional
     public Optional<ProjectMiembro> findByProjectIdAndUserId(Integer projectId, Integer userId) {
         // Buscamos la entidad en la base de datos usando el repositorio JPA
         return projectMiembroJpaRepository.findByProjectIdAndUserId(projectId, userId)

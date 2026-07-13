@@ -2,12 +2,11 @@ package com.api.proyectmanager.user.application.user;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service("userFindAll")
+@UseCase
 public class FindAll {
     private final UserRepository userRepository; // Repositorio de usuarios (PORTS)
 

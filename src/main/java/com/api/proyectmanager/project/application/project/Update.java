@@ -1,12 +1,12 @@
 package com.api.proyectmanager.project.application.project;
 
-import org.springframework.stereotype.Service;
-
+import com.api.proyectmanager.project.application.dtos.ProjectUpdate;
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 
-@Service("projectUpdate")
+@UseCase
 public class Update {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 
@@ -14,12 +14,13 @@ public class Update {
         this.projectRepository = projectRepository;
     }
 
-    public void execute(Integer projectId, Project updatedProject) {
+    public void execute(Integer projectId, ProjectUpdate updated) {
         // Validar que el proyecto exista en la base de datos
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new BusinessException("El proyecto con ID " + projectId + " no existe."));
-        // Validamos campos que no se han enviado para mantener los datos existentes
-        project.actualizarDatos(updatedProject.getName(),updatedProject.getDescription());
+        // Actualizar los campos del proyecto con los valores proporcionados en ProjectUpdate
+        project.setName(updated.name());
+        project.setDescription(updated.description());
         // Guardamos los cambios en el repositorio usando el puerto
         projectRepository.save(project);
     }

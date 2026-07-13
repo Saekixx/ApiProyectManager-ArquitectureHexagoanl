@@ -3,18 +3,16 @@ package com.api.proyectmanager.project.application.projectMiembro;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ProjectMiembro;
 import com.api.proyectmanager.project.domain.ports.ProjectMemberRepository;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@UseCase
 public class AddMemberToProject {
     private final ProjectMemberRepository projectMemberRepository; // Repositorio para manejar la persistencia de miembros del proyecto (PORTS)
     private final ProjectRepository projectRepository; // Repositorio para manejar la persistencia de proyectos (PORTS)
@@ -27,45 +25,49 @@ public class AddMemberToProject {
         this.userRepository = userRepository;
     }
 
-    @Transactional
     public String execute(Integer projectId, Integer userId) {
-        // Validar que el proyecto exista
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new BusinessException("El proyecto con ID " + projectId + " no existe."));
-        // Validar que el usuario exista
+        // Validamos que el usuario exista
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("El usuario con ID " + userId + " no existe."));
-        // Validar que el usuario este activo en el sistema antes de agregarlo al proyecto
+        // Validamos que el usuario esté activo
         if (!user.getIsActive()) {
-            throw new BusinessException("No se puede agregar al proyecto porque el usuario está desactivado en el sistema.");
+            throw new BusinessException("El usuario con ID " + userId + " no está activo.");
         }
-        // Buscar si ya existe una relación previa (activa o inactiva)
-        Optional<ProjectMiembro> miembroExistente = 
-            projectMemberRepository.findByProjectIdAndUserId(projectId, userId);
+        // Validamos que el proyecto exista
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException("El proyecto con ID " + projectId + " no existe."));
+        // Validamos que el proyecto esté activo
+        if (!project.isActive()) {
+            throw new BusinessException("El proyecto con ID " + projectId + " no está activo.");
+        }
+        // Traemos la lista de miembros del proyecto
+        Optional<ProjectMiembro> miembroExistente = projectMemberRepository.findByProjectIdAndUserId(projectId, userId);
+        // Si el miembro ya existe
         if (miembroExistente.isPresent()) {
-            ProjectMiembro miembro = miembroExistente.get(); // Obtenemos el miembro existente para verificar su estado
-            // CASO A: Ya está activo trabajando en este proyecto actualmente
+            ProjectMiembro miembro = miembroExistente.get();
+            // El miembro ya es activo
             if (miembro.getIsActive()) {
                 throw new BusinessException("El usuario con ID " + userId + " ya es un miembro ACTIVO de este proyecto.");
             }
-            // CASO B: Si el usuario a existe en el proyecto pero está inactivo, lo reactivamos
+            // El miembro estaba inactivo, lo reactivamos
             miembro.setIsActive(true);
-            miembro.setJoinedAt(LocalDateTime.now()); // Guardamos la fecha de reactivación del proyecto
-            miembro.setExitedAt(null); // Limpiamos la fecha de salida ya que ahora está activo nuevamente
-            projectMemberRepository.save(miembro); // Guardamos la reactivación del miembro en el proyecto
+            miembro.setExitedAt(null); // Limpiamos la fecha de salida
+            miembro.setJoinedAt(LocalDateTime.now()); // Actualizamos la fecha de ingreso
+            // Guardamos el cambio en la base de datos a través del puerto
+            projectMemberRepository.save(miembro);
             // Retornamos un mensaje indicando que el usuario ha sido reactivado exitosamente en el proyecto
             return "El usuario con ID " + userId + " ha sido reactivado exitosamente en el proyecto con ID " + projectId + ".";
         }
-        // Crear un objeto ProjectMiembro para representar la relación entre el proyecto y el usuario
-        ProjectMiembro projectMiembro = new ProjectMiembro();
-        projectMiembro.setProject(project); // Asignar el proyecto al miembro
-        projectMiembro.setUser(user); // Asignar el usuario al miembro
-        projectMiembro.setIsActive(true); // Establecer el estado como activo
-        projectMiembro.setJoinedAt(LocalDateTime.now()); // Guardar la fecha de unión
-        projectMiembro.setExitedAt(null); // Limpiar la fecha de salida
-        // Guardar la relación en el repositorio de miembros del proyecto
-        projectMemberRepository.save(projectMiembro);
-        // Retornar un mensaje indicando que el miembro fue agregado exitosamente
+        // Si no existe, agregamos el miembro al proyecto
+        ProjectMiembro nuevoMiembro = new ProjectMiembro();
+        nuevoMiembro.setProject(project); // Le pasas el objeto de dominio puro
+        nuevoMiembro.setUser(user);       // Le pasas el objeto de dominio puro
+        nuevoMiembro.setIsActive(true);
+        nuevoMiembro.setJoinedAt(LocalDateTime.now());
+        nuevoMiembro.setExitedAt(null);
+        // Guardamos el nuevo miembro en la base de datos a través del puerto
+        projectMemberRepository.save(nuevoMiembro);
+        // Retornamos un mensaje indicando que el usuario ha sido agregado exitosamente al proyecto
         return "El usuario con ID " + userId + " ha sido agregado exitosamente al proyecto con ID " + projectId + ".";
     }
 }

@@ -6,8 +6,10 @@ import java.util.Optional;
 import com.api.proyectmanager.project.domain.ProjectMiembro;
 
 public interface ProjectMemberRepository {
-    // Puerto para guardar la asignación, la actualizar o la desactivar (Histórico)
+    // Puerto para guardar la asignación, actualizar o la desactivar (Histórico)
     ProjectMiembro save(ProjectMiembro projectMiembro);
+    // Puerto para guardar o actualizar una lista de asignaciones (Histórico)
+    List<ProjectMiembro> saveAll(List<ProjectMiembro> projectMembers);
 
     // Puerto para buscar la asignación única de un usuario en un proyecto (Saber si existe o su estado)
     Optional<ProjectMiembro> findByProjectIdAndUserId(Integer projectId, Integer userId);

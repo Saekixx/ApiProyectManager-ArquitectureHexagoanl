@@ -35,6 +35,13 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
+    // Metodo para activar o desactivar el usuario
+    public Boolean toggleActive() {
+        this.isActive = !this.isActive;
+        this.updatedAt = LocalDateTime.now(); // Actualizar la fecha de actualización al cambiar el estado
+        return this.isActive;
+    }
+
     // Método para comenzar el trabajo en la tarea, delegando la lógica al estado actual de la tarea
     public void comenzarTrabajo() {
         this.getState().iniciarProgreso(this);

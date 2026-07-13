@@ -17,7 +17,7 @@ public class ProjectMiembro {
         this.id = id;
         this.project = project;
         this.user = user;
-        this.isActive = isActive;
+        this.isActive = true; // Por defecto, el miembro se crea como activo
         this.joinedAt = joinedAt;
         this.exitedAt = exitedAt;
     }

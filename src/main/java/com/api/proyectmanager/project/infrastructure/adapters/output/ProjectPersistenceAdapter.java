@@ -131,4 +131,11 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Verificamos si un usuario es el líder de un proyecto específico usando el repositorio JPA
         return springDataProjectRepository.existsByIdAndLeader_IdAndIsActiveTrue(projectId, userId);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsById(Integer id) {
+        // Verificamos si un proyecto existe por su ID usando el repositorio JPA
+        return springDataProjectRepository.existsById(id);
+    }
 }

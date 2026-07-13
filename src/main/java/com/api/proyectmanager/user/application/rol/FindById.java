@@ -2,12 +2,11 @@ package com.api.proyectmanager.user.application.rol;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.Rol;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 
-@Service("rolFindById")
+@UseCase
 public class FindById {
     private final RolRepository rolRepository; // Repositorio de roles (PORTS)
 

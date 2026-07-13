@@ -22,6 +22,8 @@ public interface ProjectRepository {
     // Obtiene todos los proyectos en los que un miembro específico está involucrado
     List<Project> findByMemberId(Integer memberId);
 
+    // Verifica si un proyecto existe por su ID
+    Boolean existsById(Integer id);
     // Cambia el líder de un proyecto
     void changeLeader(Integer projectId, User newLeader); 
     // Verifica si un usuario es miembro de un proyecto específico

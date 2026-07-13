@@ -16,7 +16,6 @@ public class ProjectMapper {
             entity.getId(), 
             entity.getName(), 
             entity.getDescription(),
-            entity.getIsActive(),
             UserMapper.toDomain(entity.getLeader()), // Mapeo del líder del proyecto
             ProjectMiembroMapper.toDomainList(entity.getProjectMembers()), // Mapeo de los miembros del proyecto
             entity.getCreatedAt(), 

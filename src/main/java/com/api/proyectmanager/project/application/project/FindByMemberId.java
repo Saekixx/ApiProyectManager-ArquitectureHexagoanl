@@ -2,13 +2,12 @@ package com.api.proyectmanager.project.application.project;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 
-@Service("projectFindByMemberId")
+@UseCase
 public class FindByMemberId {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
 

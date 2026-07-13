@@ -2,13 +2,12 @@ package com.api.proyectmanager.task.application.usecases;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.task.application.dto.TaskKanbanResponse;
 import com.api.proyectmanager.task.domain.Task;
 import com.api.proyectmanager.task.domain.TaskStatus;
 
-@Service
+@UseCase
 public class KanbaBoard {
     private final FindByIdProject findByIdProjectUseCase;
 

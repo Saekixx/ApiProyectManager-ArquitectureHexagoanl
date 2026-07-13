@@ -1,12 +1,11 @@
 package com.api.proyectmanager.user.application.user;
 
-import org.springframework.stereotype.Service;
-
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service("userToggleActiveById")
+@UseCase
 public class ToggleActiveById {
     private final UserRepository userRepository;
 
@@ -24,10 +23,8 @@ public class ToggleActiveById {
         // Le decimos al puerto que guarde al usuario con su nuevo estado
         userRepository.save(user);
         // Retornamos un mensaje indicando si el usuario fue activado o desactivado
-        if (newActiveState) {
-            return "Usuario con el ID " + id + " activado correctamente.";
-        } else {
-            return "Usuario con el ID " + id + " desactivado correctamente.";
-        }
+        return newActiveState 
+            ? "Usuario con el ID " + id + " activado correctamente." 
+            : "Usuario con el ID " + id + " desactivado correctamente.";
     }
 }

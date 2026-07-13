@@ -100,13 +100,15 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    // Método para actualizar los datos del usuario, excepto el rol y el estado activo
+    // Metodo para actualizar los datos generales del usuario 
     public void actualizarDatosGenerales(String username, String email, String fullname, String password) {
-        if (username != null && !username.isBlank()) this.username = username;
-        if (email != null && !email.isBlank()) this.email = email;
-        if (fullname != null && !fullname.isBlank()) this.fullname = fullname;
+        this.username = username;
+        this.email = email;
+        this.fullname = fullname;
+        // Solo actualizamos la contraseña si se proporciona una nueva
         if (password != null && !password.isBlank()) this.password = password;
     }
+    
     // Metodo para activar o desactivar el usuario
     public Boolean toggleActive() {
         this.isActive = !this.isActive;

@@ -1,7 +1,7 @@
 package com.api.proyectmanager.project.infrastructure.adapters.output.jpa.project;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -28,11 +28,11 @@ public class ProjectEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "leader_id")
     private UserEntity leader; // Relación con la clase UserEntity (líder del proyecto)
 
     @OneToMany(mappedBy = "project") // Relación con la clase ProjectMiembroEntity (miembros del proyecto)
-    private List<ProjectMiembroEntity> projectMembers;
+    private Set<ProjectMiembroEntity> projectMembers;
 
     @Column(nullable = false)
     private Boolean isActive = true;  

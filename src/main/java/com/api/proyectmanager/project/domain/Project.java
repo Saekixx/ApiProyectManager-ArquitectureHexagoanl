@@ -1,7 +1,7 @@
 package com.api.proyectmanager.project.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import com.api.proyectmanager.user.domain.User;
 
@@ -11,18 +11,18 @@ public class Project {
     private String description;
     private Boolean isActive;
     private User leader; // Relación con User (líder del proyecto)
-    private List<ProjectMiembro> projectMembers;
+    private Set<ProjectMiembro> projectMembers;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Project() {}
 
-    public Project(Integer id, String name, String description, Boolean isActive, User leader, List<ProjectMiembro> projectMembers, LocalDateTime createdAt,
+    public Project(Integer id, String name, String description, User leader, Set<ProjectMiembro> projectMembers, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isActive = isActive;
+        this.isActive = true; // Por defecto, el proyecto se crea como activo
         this.leader = leader;
         this.projectMembers = projectMembers;
         this.createdAt = createdAt;
@@ -69,11 +69,11 @@ public class Project {
         this.leader = leader;
     }
 
-    public List<ProjectMiembro> getProjectMembers() {
+    public Set<ProjectMiembro> getProjectMembers() {
         return projectMembers;
     }
 
-    public void setProjectMembers(List<ProjectMiembro> projectMembers) {
+    public void setProjectMembers(Set<ProjectMiembro> projectMembers) {
         this.projectMembers = projectMembers;
     }
 
@@ -91,12 +91,6 @@ public class Project {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public void actualizarDatos(String name, String description) {
-        if (name != null && !name.isBlank()) this.name = name;
-        if (description != null && !description.isBlank()) this.description = description;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Boolean toggleActive() {

@@ -13,7 +13,11 @@ import com.api.proyectmanager.shared.adapters.http.Response;
 import com.api.proyectmanager.user.application.user.FindAll;
 import com.api.proyectmanager.user.application.user.Update;
 import com.api.proyectmanager.user.application.user.FindById;
+import com.api.proyectmanager.user.application.user.Save;
 import com.api.proyectmanager.user.application.user.ToggleActiveById;
+import com.api.proyectmanager.user.application.dtos.ChangeRolRequest;
+import com.api.proyectmanager.user.application.dtos.UserCreateRequest;
+import com.api.proyectmanager.user.application.dtos.UserUpdateRequest;
 import com.api.proyectmanager.user.application.user.ChangeRoleById;
 import com.api.proyectmanager.user.domain.User;
 
@@ -28,13 +32,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = "*")
 public class UserController {
     private final FindAll findAllService;
+    private final Save saveService;
     private final Update updateService;
     private final FindById findByIdService;
     private final ToggleActiveById toggleActiveById;
     private final ChangeRoleById changeRoleByIdService;
 
-    public UserController(FindAll findAllService, Update updateService, FindById findByIdService, ToggleActiveById toggleActiveById, ChangeRoleById changeRoleByIdService) {
+    public UserController(FindAll findAllService, Save saveService, Update updateService, FindById findByIdService, ToggleActiveById toggleActiveById, ChangeRoleById changeRoleByIdService) {
         this.findAllService = findAllService;
+        this.saveService = saveService;
         this.updateService = updateService;
         this.findByIdService = findByIdService;
         this.toggleActiveById = toggleActiveById;
@@ -57,10 +63,20 @@ public class UserController {
         return ResponseEntity.ok(new Response<>(true, "Usuario encontrado.", findByIdService.findById(id)));
     }
 
-    // Endpoint para editar un usuario por su ID
-    @PutMapping("/edit/{id}")
+    // Endpoint para crear un nuevo usuario
+    // /api/users/
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response<Void>> updateUserById(@PathVariable Integer id, @RequestBody User user) {
+    public ResponseEntity<Response<String>> createUser(@RequestBody UserCreateRequest user) {
+        String result = saveService.save(user);
+        return ResponseEntity.ok(new Response<>(true, result));
+    }
+
+    // Endpoint para editar un usuario por su ID
+    // /api/users/{id}
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response<Void>> updateUserById(@PathVariable Integer id, @RequestBody UserUpdateRequest user) {
         updateService.execute(id, user);
         return ResponseEntity.ok(new Response<>(true, "Usuario actualizado correctamente."));
     }
@@ -75,10 +91,10 @@ public class UserController {
 
 
     // Endpoint para cambiar el rol de un usuario por su ID
-    @PostMapping("/rol/{userId}/{rolId}")
+    @PutMapping("/{userId}/rol")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response<Void>> changeRoleById(@PathVariable Integer userId, @PathVariable Integer rolId) {
-        changeRoleByIdService.execute(userId, rolId);
+    public ResponseEntity<Response<Void>> changeRoleById(@PathVariable Integer userId, @RequestBody ChangeRolRequest request) {
+        changeRoleByIdService.execute(userId, request);
         return ResponseEntity.ok(new Response<>(true, "Rol del usuario cambiado correctamente."));  
     }
 }

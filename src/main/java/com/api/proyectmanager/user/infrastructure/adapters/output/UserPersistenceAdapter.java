@@ -2,6 +2,7 @@ package com.api.proyectmanager.user.infrastructure.adapters.output;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,5 +91,14 @@ public class UserPersistenceAdapter implements UserRepository {
         if (userId == null) return false;
         // Retornamos true si existe un usuario con el ID dado y su rol es "ADMIN", de lo contrario retornamos false
         return jpaRepository.existsByIdAndRol_Name(userId, "ADMIN");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> findAllByIds(Set<Integer> ids) {
+        // Obtenemos todas las entidades de usuario cuyos IDs están en el conjunto dado usando el repositorio JPA
+        List<UserEntity> entities = jpaRepository.findAllByIds(ids);
+        // Convertimos la lista de entidades a una lista de objetos User y la retornamos
+        return entities.stream().map(UserMapper::toDomain).toList();
     }
 }

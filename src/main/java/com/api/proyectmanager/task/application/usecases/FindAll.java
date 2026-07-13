@@ -2,12 +2,11 @@ package com.api.proyectmanager.task.application.usecases;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.task.domain.Task;
 import com.api.proyectmanager.task.domain.ports.TaskRepository;
 
-@Service("TaskFindAll")
+@UseCase
 public class FindAll {
     private final TaskRepository taskRepository;
 

@@ -1,12 +1,11 @@
 package com.api.proyectmanager.project.application.project;
 
-import org.springframework.stereotype.Service;
-
 import com.api.proyectmanager.project.domain.ports.ProjectRepository;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service("projectChangeLeaderById")
+@UseCase
 public class ChangeLeaderById {
     private final ProjectRepository projectRepository; // Repositorio de proyectos (PORTS)
     private final UserRepository userRepository;    // Repositorio de usuarios (PORTS)

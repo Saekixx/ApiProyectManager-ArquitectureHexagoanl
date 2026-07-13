@@ -2,6 +2,7 @@ package com.api.proyectmanager.user.domain.ports;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.api.proyectmanager.user.domain.User;
 
@@ -24,5 +25,6 @@ public interface UserRepository {
     Boolean existsByUsername(String username);
     // Puerto para saber si un usuario es admin
     Boolean isAdmin(Integer userId);
-    
+    // Puerto para obtener todos los usuarios por un conjunto de IDs
+    List<User> findAllByIds(Set<Integer> ids);
 }

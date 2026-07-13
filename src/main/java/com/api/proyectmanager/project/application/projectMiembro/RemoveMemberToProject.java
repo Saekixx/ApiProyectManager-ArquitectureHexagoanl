@@ -2,14 +2,12 @@ package com.api.proyectmanager.project.application.projectMiembro;
 
 import java.time.LocalDateTime;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.api.proyectmanager.project.domain.ProjectMiembro;
 import com.api.proyectmanager.project.domain.ports.ProjectMemberRepository;
 import com.api.proyectmanager.shared.domain.BusinessException;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 
-@Service
+@UseCase
 public class RemoveMemberToProject {
     private final ProjectMemberRepository projectMemberRepository; // Repositorio para manejar la persistencia de miembros del proyecto (PORTS)
 
@@ -18,12 +16,11 @@ public class RemoveMemberToProject {
         this.projectMemberRepository = projectMemberRepository;
     }
 
-    @Transactional
     public String execute(Integer projectId, Integer userId) {
-        // Buscamos la relación usando el Optional del puerto
+        // Validamos que el miembro exista en el proyecto
         ProjectMiembro projectMiembro = projectMemberRepository.findByProjectIdAndUserId(projectId, userId)
                 .orElseThrow(() -> new BusinessException("El usuario con ID " + userId + " no pertenece al proyecto con ID " + projectId + "."));
-        // Regla de Negocio: Validar si ya estaba inactivo en el histórico
+        // Validar si ya estaba inactivo en el histórico
         if (!projectMiembro.getIsActive()) {
             throw new BusinessException("El usuario con ID " + userId + " ya se encuentra inactivo (en el histórico) de este proyecto.");
         }
