@@ -47,24 +47,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Extraer el token JWT del encabezado de autorización
         jwt = authHeader.substring(7);
-        // Extraer el correo electrónico del usuario del token JWT usando JwtUtil
-        userEmail = jwtUtil.getUsernameFromToken(jwt);
 
-        // Si el correo electrónico del usuario no es nulo y no hay autenticación en el contexto de seguridad, se procede a autenticar al usuario
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Cargar los detalles del usuario usando UserDetailsService
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            // Validar el token JWT y, si es válido, establecer la autenticación en el contexto de seguridad
-            if (jwtUtil.validateJwtToken(jwt)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            // Extraer el correo electrónico del usuario del token JWT usando JwtUtil
+            userEmail = jwtUtil.getUsernameFromToken(jwt);
+
+            // Si el correo electrónico del usuario no es nulo y no hay autenticación en el contexto de seguridad, se procede a autenticar al usuario
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // Cargar los detalles del usuario usando UserDetailsService
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                // Validar el token JWT y, si es válido, establecer la autenticación en el contexto de seguridad
+                if (jwtUtil.validateJwtToken(jwt)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+            
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Capturamos el token vencido y respondemos un 401 limpio en formato JSON
+            SecurityContextHolder.clearContext();
+            
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            String jsonResponse = "{\n" +
+                    "  \"error\": \"Unauthorized\",\n" +
+                    "  \"message\": \"El token JWT ha expirado. Por favor, inicia sesión nuevamente.\"\n" +
+                    "}";
+
+            response.getWriter().write(jsonResponse);
+            return; // Detenemos el flujo aquí para que no siga ejecutando la aplicación
         }
+
+        // Si todo salió bien (o no hubo excepción), continúa el flujo normal
         filterChain.doFilter(request, response);
-    }
+        }
 }
