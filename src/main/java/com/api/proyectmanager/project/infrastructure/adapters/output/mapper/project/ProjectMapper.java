@@ -22,7 +22,7 @@ public class ProjectMapper {
             entity.getDescription(),
             entity.getIsActive(),
             UserMapper.toDomain(entity.getLeader()),
-            Collections.emptySet(), // No incluimos miembros para evitar ciclos de referencia
+            Collections.emptySet(),
             entity.getCreatedAt(), 
             entity.getUpdatedAt()
         );

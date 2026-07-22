@@ -19,7 +19,6 @@ import com.api.proyectmanager.project.application.project.Save;
 import com.api.proyectmanager.project.application.project.ToggleActiveById;
 import com.api.proyectmanager.project.application.project.Update;
 import com.api.proyectmanager.project.domain.Project;
-import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.request.ProjectCreateRequest;
 import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.request.ProjectLeader;
 import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.response.ProjectListDTO;
 import com.api.proyectmanager.shared.adapters.http.Response;
@@ -69,19 +68,16 @@ public class ProjectController {
         // Detectar el rol del usuario 
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+        // Obtener el Email del usuario
+        String userEmail = authentication.getName();
+        // Obtener el ID del usuario a partir del Email
+        Integer userId = idFindByEmailService.execute(userEmail);
         // Creamos una lista de proyectos vacía
         List<Project> projects;
         // Si el usuario es admin, obtenemos todos los proyectos
         if (isAdmin) projects = findAllService.findAll();
         // Si no, obtenemos solo los proyectos activos del usuario
-        else{
-            // Obtener el Email del usuario
-            String userEmail = authentication.getName();
-            // Obtener el ID del usuario a partir del Email
-            Integer userId = idFindByEmailService.execute(userEmail);
-            // Obtener los proyectos activos del usuario
-            projects = findAllActiveService.execute(userId);
-        } 
+        else projects = findAllActiveService.execute(userId);
         // Convertir la lista de proyectos a una lista de ProjectListDTO
         List<ProjectListDTO> projectDTOs = projects.stream()
                 .map(ProjectListDTO::fromDomain)
@@ -91,7 +87,6 @@ public class ProjectController {
     }
 
     // Endpoint para crear un nuevo proyecto
-    // /api/projects/create
     @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional

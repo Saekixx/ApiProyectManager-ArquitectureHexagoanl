@@ -5,6 +5,7 @@ import java.util.Set;
 import com.api.proyectmanager.shared.domain.ValidationException;
 
 public record ProjectRequest(
+    Integer projectId,
     String name,
     String description,
     Integer leaderId,
@@ -12,6 +13,10 @@ public record ProjectRequest(
 ) {
     // Constructor para validar los campos
     public ProjectRequest {
+        if (projectId == null) {
+            throw new ValidationException("El ID del proyecto no puede ser nulo");
+        }
+
         if (name == null || name.isBlank()) {
             throw new ValidationException("El nombre del proyecto no puede estar vacío");
         }

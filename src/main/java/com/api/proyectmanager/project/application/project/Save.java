@@ -1,9 +1,7 @@
 package com.api.proyectmanager.project.application.project;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,54 +30,38 @@ public class Save {
 
     @Transactional
     public void execute(ProjectRequest request) {
+        // Validar que el proyecto exista en la base de datos
+        Project project = projectRepository.findById(request.projectId())
+                        .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado con ID: " + request.projectId()));
         // Validar que el líder exista en la base de datos
         User leader = userRepository.findById(request.leaderId())
-                        .orElseThrow(() -> new BusinessException("Usuario no encontrado con ID: " + request.leaderId()));
-        // Crear una instancia de Project con los datos proporcionados
-        Project project = new Project();
-        project.setName(request.name());
-        project.setDescription(request.description());
+                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + request.leaderId()));
+        // Asignar el líder al proyecto 
         project.setLeader(leader);
-        project.setActive(true);
-        // Guardamos el proyecto en la base de datos para generar su ID
+        // Guardar el proyecto en la base de datos
         Project proyectoGuardado = projectRepository.save(project);
-        // Crear una lista para acumular todos los miembros y guardarlos en un solo lote
-        List<ProjectMiembro> miembrosAGuardar = new ArrayList<>();
-        // Instanciar el registro del líder como miembro activo del proyecto
-        ProjectMiembro liderMiembro = new ProjectMiembro();
-        liderMiembro.setProject(proyectoGuardado);
-        liderMiembro.setUser(leader);
-        liderMiembro.setIsActive(true);
-        miembrosAGuardar.add(liderMiembro);
-        // 5. Validar y registrar a los miembros adicionales de manera optimizada
-        if (request.memberIds() != null && !request.memberIds().isEmpty()) {
-
-            // Filtramos al líder directamente del Set (que ya no tiene duplicados)
-            Set<Integer> cleanMemberIds = request.memberIds().stream()
-                    .filter(id -> !id.equals(request.leaderId()))
-                    .collect(Collectors.toSet());
-
-            if (!cleanMemberIds.isEmpty()) {
-                // Obtenemos todos los miembros en una sola consulta
-                List<User> membersFetched = userRepository.findAllByIds(cleanMemberIds);
-
-                // Validar que se hayan encontrado todos los IDs solicitados
-                if (membersFetched.size() != cleanMemberIds.size()) {
-                    throw new BusinessException("Uno o más miembros especificados no existen en el sistema.");
-                }
-
-                // Instanciar los miembros adicionales y acumularlos en la lista
-                for (User member : membersFetched) {
-                    ProjectMiembro projectMember = new ProjectMiembro();
-                    projectMember.setProject(proyectoGuardado);
-                    projectMember.setUser(member);
-                    projectMember.setIsActive(true);
-                    
-                    miembrosAGuardar.add(projectMember);
-                }
+        // Registrar automáticamente al Líder como miembro activo del proyecto
+        ProjectMiembro projectMiembro = new ProjectMiembro();
+        projectMiembro.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
+        projectMiembro.setUser(leader); // Asociar el líder como miembro del proyecto
+        projectMiembro.setIsActive(true); // Marcar al líder como miembro activo
+        projectMiembroRepository.save(projectMiembro); // Guardar el miembro en la base de datos
+        // Validar y registrar a los miembros proporcionados en la lista de IDs
+        Set<Integer> memberIds = request.memberIds();
+        if (memberIds != null && !memberIds.isEmpty()) {
+            for (Integer memberId : memberIds) {
+                // Evitar agregar al líder como miembro nuevamente
+                if (memberId.equals(request.leaderId())) continue; 
+                // Validar que el miembro exista en la base de datos
+                User member = userRepository.findById(memberId)
+                        .orElseThrow(() -> new BusinessException("Usuario no encontrado con ID: " + memberId));   
+                // Crear y guardar un nuevo ProjectMiembro para cada miembro
+                ProjectMiembro projectMember = new ProjectMiembro(); // Crear una nueva instancia de ProjectMiembro para cada miembro
+                projectMember.setProject(proyectoGuardado); // Asociar el proyecto guardado al miembro
+                projectMember.setUser(member); // Asociar el miembro al proyecto
+                projectMember.setIsActive(true); // Marcar al miembro como activo
+                projectMiembroRepository.save(projectMember); // Guardar el miembro en la base de datos
             }
-        }
-        // Guardar todos los miembros de golpe
-        projectMiembroRepository.saveAll(miembrosAGuardar);
+        }  
     }
 }

@@ -1,7 +1,6 @@
 package com.api.proyectmanager.project.infrastructure.adapters.output.mapper.projectMiembro;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,9 +40,7 @@ public class ProjectMiembroMapper {
     // Metodo para mapear de una lista de ProjectMiembroEntity a una lista de ProjectMiembro
     public static Set<ProjectMiembro> toDomainList(Set<ProjectMiembroEntity> entities) {
         if (entities == null) return Collections.emptySet();
-        // Se crea una copia en memoria para evitar conflictos con la inicialización perezosa (Lazy) de Hibernate
-        Set<ProjectMiembroEntity> safeCopy = new HashSet<>(entities);
-        return safeCopy.stream()
+        return entities.stream()
                        .map(ProjectMiembroMapper::toDomain)
                        .collect(Collectors.toSet());
     }
@@ -75,10 +72,8 @@ public class ProjectMiembroMapper {
     // Metodo para mapear de una lista de ProjectMiembro a una lista de ProjectMiembroEntity
     public static Set<ProjectMiembroEntity> toEntityList(Set<ProjectMiembro> domainList) {
         if (domainList == null) return Collections.emptySet();
-        // Se crea una copia en memoria para evitar conflictos con la inicialización perezosa (Lazy) de Hibernate
-        Set<ProjectMiembro> safeCopy = new HashSet<>(domainList);
-        return safeCopy.stream()
-                       .map(ProjectMiembroMapper::toEntity)
-                       .collect(Collectors.toSet());
+        return domainList.stream()
+                         .map(ProjectMiembroMapper::toEntity)
+                         .collect(Collectors.toSet());
     }
 }
