@@ -7,14 +7,16 @@ import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserE
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "project_miembro")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ProjectMiembroEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -13,16 +13,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.api.proyectmanager.auth.infrastructure.security.CustomAuthenticationEntryPoint;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity // Habilita la seguridad a nivel de método, permitiendo el uso de anotaciones como @PreAuthorize y @PostAuthorize
 public class SecurityConfig {
     // Inyección de dependencias para JwtAuthenticationFilter
     private final JwtAuthenticationFilter jwtAuthFilter;
+    // Inyección de dependencias para CustomAuthenticationEntryPoint
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    // Constructor para inicializar JwtAuthenticationFilter
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
+    // Constructor para inicializar JwtAuthenticationFilter y CustomAuthenticationEntryPoint
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     // Configuración de la cadena de filtros de seguridad
@@ -39,6 +44,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 // Obligamos a la API a ser STATELESS (sin estado/sesiones de servidor)
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .exceptionHandling(exception -> exception
+                // Registrar el punto de entrada para peticiones no autenticadas
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

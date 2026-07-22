@@ -17,12 +17,12 @@ public class Project {
 
     public Project() {}
 
-    public Project(Integer id, String name, String description, User leader, Set<ProjectMiembro> projectMembers, LocalDateTime createdAt,
+    public Project(Integer id, String name, String description, Boolean active, User leader, Set<ProjectMiembro> projectMembers, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isActive = true; // Por defecto, el proyecto se crea como activo
+        this.isActive = active;
         this.leader = leader;
         this.projectMembers = projectMembers;
         this.createdAt = createdAt;

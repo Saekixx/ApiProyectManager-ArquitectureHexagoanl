@@ -1,16 +1,16 @@
 package com.api.proyectmanager.auth.application.services;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import com.api.proyectmanager.auth.domain.ports.RegisterUseCase;
 import com.api.proyectmanager.auth.infrastructure.adapters.input.dto.RegisterRequest;
+import com.api.proyectmanager.shared.domain.annotation.UseCase;
 import com.api.proyectmanager.user.domain.Rol;
 import com.api.proyectmanager.user.domain.User;
 import com.api.proyectmanager.user.domain.ports.RolRepository;
 import com.api.proyectmanager.user.domain.ports.UserRepository;
 
-@Service
+@UseCase
 public class RegisterService implements RegisterUseCase {
     private final UserRepository userRepository; // Puerto del modulo user
     private final RolRepository rolRepository; // Puerto del modulo rol

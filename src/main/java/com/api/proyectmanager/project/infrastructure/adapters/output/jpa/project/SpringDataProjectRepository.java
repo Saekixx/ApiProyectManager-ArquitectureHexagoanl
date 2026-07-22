@@ -13,7 +13,12 @@ public interface SpringDataProjectRepository extends JpaRepository<ProjectEntity
     List<ProjectEntity> findAllActive(Integer userId);
 
     // Puerto para listar todos los proyectos activos por líder 
-    @Query("SELECT p FROM ProjectEntity p WHERE p.leader.id = :leaderId AND p.isActive = true")
+    @Query("""
+        SELECT DISTINCT p FROM ProjectEntity p 
+        LEFT JOIN FETCH p.leader l 
+        LEFT JOIN FETCH l.rol 
+        WHERE l.id = :leaderId AND p.isActive = true
+    """)
     List<ProjectEntity> findByLeaderId(Integer leaderId);
 
     // Puerto para listar todos los proyectos activos por miembro

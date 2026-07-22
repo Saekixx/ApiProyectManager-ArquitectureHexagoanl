@@ -2,6 +2,7 @@ package com.api.proyectmanager.shared.adapters.http;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,6 +18,22 @@ public class GlobalExceptionHandler {
         // success = false, mensaje = el de la excepción, data = null
         Response<Void> response = new Response<>(false, ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    // Maneja errores lanzados dentro del constructor del DTO/Record durante la deserialización
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Response<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String message = "El cuerpo de la solicitud no es válido.";
+
+        // Verificamos si la causa raíz de la falla fue nuestra propia ValidationException
+        if (ex.getCause() != null && ex.getCause() instanceof ValidationException) {
+            message = ex.getCause().getMessage();
+        } else if (ex.getRootCause() != null && ex.getRootCause() instanceof ValidationException) {
+            message = ex.getRootCause().getMessage();
+        }
+
+        Response<Void> response = new Response<>(false, message, null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     // Manejo de Errores de Negocio Generales

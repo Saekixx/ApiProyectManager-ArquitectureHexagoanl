@@ -1,5 +1,7 @@
 package com.api.proyectmanager.project.application.dtos;
 
+import com.api.proyectmanager.shared.domain.ValidationException;
+
 public record ProjectUpdate(
     String name,
     String description
@@ -7,10 +9,10 @@ public record ProjectUpdate(
     // Constructor para validar los campos
     public ProjectUpdate {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("El nombre del proyecto no puede estar vacío");
+            throw new ValidationException("El nombre del proyecto no puede estar vacío");
         }
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("La descripción del proyecto no puede estar vacía");
+            throw new ValidationException("La descripción del proyecto no puede estar vacía");
         }
     }
 }

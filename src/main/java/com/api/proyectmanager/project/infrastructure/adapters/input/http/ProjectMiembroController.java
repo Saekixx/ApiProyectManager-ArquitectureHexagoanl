@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.proyectmanager.project.application.dtos.MemberDTO;
 import com.api.proyectmanager.project.application.projectMiembro.AddMemberToProject;
-import com.api.proyectmanager.project.application.projectMiembro.FindActiveMembersByProjectId;
+import com.api.proyectmanager.project.application.projectMiembro.FindAllMembersByProjectId;
 import com.api.proyectmanager.project.application.projectMiembro.RemoveMemberToProject;
-import com.api.proyectmanager.project.domain.ProjectMiembro;
 import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.request.ProjectMemberAction;
 import com.api.proyectmanager.shared.adapters.http.Response;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,17 +28,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ProjectMiembroController {
     private final AddMemberToProject addMemberToProjectService;
     private final RemoveMemberToProject removeMemberFromProjectService;
-    private final FindActiveMembersByProjectId findActiveMembersByProjectIdService;
+    private final FindAllMembersByProjectId findAllMembersByProjectIdService;
 
-    public ProjectMiembroController(AddMemberToProject addMemberToProjectService, RemoveMemberToProject removeMemberFromProjectService, FindActiveMembersByProjectId findActiveMembersByProjectIdService) {
+    public ProjectMiembroController(AddMemberToProject addMemberToProjectService, RemoveMemberToProject removeMemberFromProjectService, FindAllMembersByProjectId findAllMembersByProjectIdService) {
         this.addMemberToProjectService = addMemberToProjectService;
         this.removeMemberFromProjectService = removeMemberFromProjectService;
-        this.findActiveMembersByProjectIdService = findActiveMembersByProjectIdService;
+        this.findAllMembersByProjectIdService = findAllMembersByProjectIdService;
     }
 
     // Endpoint para agregar un miembro a un proyecto
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
+    @Transactional
     public ResponseEntity<Response<String>> addMember(@RequestBody ProjectMemberAction action) {
         String message = addMemberToProjectService.execute(action.projectId(), action.userId());
         return ResponseEntity.ok(new Response<>(true, message));
@@ -45,17 +48,19 @@ public class ProjectMiembroController {
     // Endpoint para eliminar un miembro de un proyecto
     @PostMapping("/remove")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
+    @Transactional
     public ResponseEntity<Response<String>> removeMember(@RequestBody ProjectMemberAction action) {
         String message = removeMemberFromProjectService.execute(action.projectId(), action.userId());
         return ResponseEntity.ok(new Response<>(true, message));
     }
 
     // Endpoint para obtener todos los miembros activos de un proyecto por su ID
-    @GetMapping("/active")
+    @GetMapping("/{projectId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
-    public ResponseEntity<Response<List<ProjectMiembro>>> findActiveMembers(@RequestBody Integer projectId) {
-        List<ProjectMiembro> members = findActiveMembersByProjectIdService.execute(projectId);
-        return ResponseEntity.ok(new Response<>(true, "Miembros activos del proyecto encontrados.", members));
+    @Transactional
+    public ResponseEntity<Response<List<MemberDTO>>> findAllMembers(@PathVariable Integer projectId) {
+        List<MemberDTO> members = findAllMembersByProjectIdService.execute(projectId);
+        return ResponseEntity.ok(new Response<>(true, "Miembros del proyecto encontrados.", members));
     }
     
 }

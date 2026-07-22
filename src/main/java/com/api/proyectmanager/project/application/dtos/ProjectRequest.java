@@ -2,6 +2,8 @@ package com.api.proyectmanager.project.application.dtos;
 
 import java.util.Set;
 
+import com.api.proyectmanager.shared.domain.ValidationException;
+
 public record ProjectRequest(
     String name,
     String description,
@@ -11,16 +13,16 @@ public record ProjectRequest(
     // Constructor para validar los campos
     public ProjectRequest {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("El nombre del proyecto no puede estar vacío");
+            throw new ValidationException("El nombre del proyecto no puede estar vacío");
         }
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("La descripción del proyecto no puede estar vacía");
+            throw new ValidationException("La descripción del proyecto no puede estar vacía");
         }
         if (leaderId == null) {
-            throw new IllegalArgumentException("El ID del líder del proyecto no puede ser nulo");
+            throw new ValidationException("El ID del líder del proyecto no puede ser nulo");
         }
         if (memberIds == null) {
-            throw new IllegalArgumentException("La lista de miembros del proyecto no puede ser nula");
+            throw new ValidationException("La lista de miembros del proyecto no puede ser nula");
         }
     }
 }

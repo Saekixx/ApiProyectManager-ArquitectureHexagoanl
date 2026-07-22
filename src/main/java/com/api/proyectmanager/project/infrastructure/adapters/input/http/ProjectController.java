@@ -20,6 +20,7 @@ import com.api.proyectmanager.project.application.project.ToggleActiveById;
 import com.api.proyectmanager.project.application.project.Update;
 import com.api.proyectmanager.project.domain.Project;
 import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.request.ProjectCreateRequest;
+import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.request.ProjectLeader;
 import com.api.proyectmanager.project.infrastructure.adapters.input.dtos.response.ProjectListDTO;
 import com.api.proyectmanager.shared.adapters.http.Response;
 import com.api.proyectmanager.user.application.user.IdFindByEmail;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -67,16 +69,19 @@ public class ProjectController {
         // Detectar el rol del usuario 
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ADMIN"));
-        // Obtener el Email del usuario
-        String userEmail = authentication.getName();
-        // Obtener el ID del usuario a partir del Email
-        Integer userId = idFindByEmailService.execute(userEmail);
         // Creamos una lista de proyectos vacía
         List<Project> projects;
         // Si el usuario es admin, obtenemos todos los proyectos
         if (isAdmin) projects = findAllService.findAll();
         // Si no, obtenemos solo los proyectos activos del usuario
-        else projects = findAllActiveService.execute(userId);
+        else{
+            // Obtener el Email del usuario
+            String userEmail = authentication.getName();
+            // Obtener el ID del usuario a partir del Email
+            Integer userId = idFindByEmailService.execute(userEmail);
+            // Obtener los proyectos activos del usuario
+            projects = findAllActiveService.execute(userId);
+        } 
         // Convertir la lista de proyectos a una lista de ProjectListDTO
         List<ProjectListDTO> projectDTOs = projects.stream()
                 .map(ProjectListDTO::fromDomain)
@@ -87,15 +92,16 @@ public class ProjectController {
 
     // Endpoint para crear un nuevo proyecto
     // /api/projects/create
-    @PostMapping("/create")
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Transactional
     public ResponseEntity<Response<Void>> createProject(@RequestBody ProjectRequest request) {
             saveService.execute(request);
             return ResponseEntity.ok(new Response<>(true, "Proyecto creado correctamente."));
     }
 
     // Endpoint para actualizar un proyecto existente
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response<Void>> updateProject(@PathVariable Integer id, @RequestBody ProjectUpdate updatedProject) {
         updateService.execute(id, updatedProject);
@@ -110,10 +116,10 @@ public class ProjectController {
     }
 
     // Endpoint para cambiar el líder de un proyecto
-    @PostMapping("/change-leader/{projectId}/{newLeaderId}")
+    @PostMapping("/change-leader")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response<Void>> changeLeader(@PathVariable Integer projectId, @PathVariable Integer newLeaderId) {
-        changeLeaderByIdService.execute(projectId, newLeaderId);
+    public ResponseEntity<Response<Void>> changeLeader(@RequestBody ProjectLeader projectLeader) {
+        changeLeaderByIdService.execute(projectLeader.projectId(), projectLeader.newLeaderId());
         return ResponseEntity.ok(new Response<>(true, "Líder del proyecto cambiado correctamente."));
     }
 
@@ -128,7 +134,14 @@ public class ProjectController {
     // Endpoint para obtener proyectos por ID de miembro
     @GetMapping("/member/{memberId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('COLABORADOR')")
-    public ResponseEntity<Response<List<Project>>> findByMemberId(@PathVariable Integer memberId) {
-        return ResponseEntity.ok(new Response<>(true, "Proyectos encontrados por miembro.", findByMemberIdService.execute(memberId)));
+    public ResponseEntity<Response<List<ProjectListDTO>>> findByMemberId(@PathVariable Integer memberId) {
+        // Obtener los proyectos asociados al ID de miembro
+        List<Project> projects = findByMemberIdService.execute(memberId);
+        // Convertir la lista de proyectos a una lista de ProjectListDTO
+        List<ProjectListDTO> projectDTOs = projects.stream()
+                .map(ProjectListDTO::fromDomain)
+                .toList();
+        // Devolver la respuesta con los proyectos encontrados
+        return ResponseEntity.ok(new Response<>(true, "Proyectos encontrados por miembro.", projectDTOs));
     }
 }

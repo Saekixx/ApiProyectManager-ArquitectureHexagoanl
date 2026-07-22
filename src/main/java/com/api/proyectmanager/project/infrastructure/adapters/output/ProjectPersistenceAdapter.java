@@ -48,7 +48,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Obtenemos todos los proyectos desde la base de datos usando el repositorio JPA
         List<ProjectEntity> entities = springDataProjectRepository.findAll();
         // Convertimos la lista de ProjectEntity a una lista de Project y la retornamos
-        return entities.stream().map(ProjectMapper::toDomain).toList();
+        return entities.stream().map(ProjectMapper::toDomainShallow).toList();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Obtenemos todos los proyectos activos desde la base de datos usando el repositorio JPA
         List<ProjectEntity> entities = springDataProjectRepository.findAllActive(userId);
         // Convertimos la lista de ProjectEntity a una lista de Project y la retornamos
-        return entities.stream().map(ProjectMapper::toDomain).toList();
+        return entities.stream().map(ProjectMapper::toDomainShallow).toList();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Buscamos el proyecto por ID usando el repositorio JPA
         Optional<ProjectEntity> entityOptional = springDataProjectRepository.findById(projectId);
         // Convertimos el objeto ProjectEntity a Project si está presente
-        return entityOptional.map(ProjectMapper::toDomain);
+        return entityOptional.map(ProjectMapper::toDomainShallow);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Buscamos los proyectos por ID de líder usando el repositorio JPA
         List<ProjectEntity> entities = springDataProjectRepository.findByLeaderId(leaderId);
         // Convertimos la lista de ProjectEntity a una lista de Project y la retornamos
-        return entities.stream().map(ProjectMapper::toDomain).toList();
+        return entities.stream().map(ProjectMapper::toDomainShallow).toList();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ProjectPersistenceAdapter implements ProjectRepository {
         // Buscamos los proyectos por ID de miembro usando el repositorio JPA
         List<ProjectEntity> entities = springDataProjectRepository.findByMemberId(memberId);
         // Convertimos la lista de ProjectEntity a una lista de Project y la retornamos
-        return entities.stream().map(ProjectMapper::toDomain).toList();
+        return entities.stream().map(ProjectMapper::toDomainShallow).toList();
     }
 
     @Override

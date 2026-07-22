@@ -70,9 +70,8 @@ public class ProjectMiembroPersistenceAdapter implements ProjectMemberRepository
     @Transactional
     public List<ProjectMiembro> findAllMembersByProjectId(Integer projectId) {
         // Buscamos todos los miembros (activos e inactivos) de un proyecto usando el repositorio JPA
-        return projectMiembroJpaRepository.findAll()
+        return projectMiembroJpaRepository.findAllMembersByProjectId(projectId)
                 .stream()
-                .filter(member -> member.getProject().getId().equals(projectId))
                 .map(ProjectMiembroMapper::toDomain)
                 .toList();
     }

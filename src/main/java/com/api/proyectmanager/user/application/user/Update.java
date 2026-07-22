@@ -24,6 +24,10 @@ public class Update {
         // Validamos que el usuario exista antes de actualizarlo
         User userExistente = userRepository.findById(id)
             .orElseThrow(() -> new BusinessException("Usuario con ID " + id + " no existe."));
+        // Validar que el email no esté siendo usado por otro usuario (si es que se está cambiando)
+        if (!userExistente.getEmail().equals(update.email()) && userRepository.existsByEmail(update.email())) {
+            throw new BusinessException("El correo electrónico " + update.email() + " ya está en uso por otro usuario.");
+        }
         // Si se envia una contraseña nueva, la encriptamos antes de actualizarla
         if (update.password() != null && !update.password().isEmpty()) {
             userExistente.setPassword(passwordEncoder.encode(update.password()));

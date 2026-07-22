@@ -11,14 +11,16 @@ import com.api.proyectmanager.user.infrastructure.adapters.output.jpa.user.UserE
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "project")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ProjectEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,6 +28,8 @@ public class ProjectEntity {
     private String name;
     @Column(nullable = false)
     private String description;
+    @Column(nullable = false)
+    private Boolean isActive; 
 
     @ManyToOne
     @JoinColumn(name = "leader_id")
@@ -33,9 +37,6 @@ public class ProjectEntity {
 
     @OneToMany(mappedBy = "project") // Relación con la clase ProjectMiembroEntity (miembros del proyecto)
     private Set<ProjectMiembroEntity> projectMembers;
-
-    @Column(nullable = false)
-    private Boolean isActive = true;  
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
